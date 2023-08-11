@@ -74,7 +74,9 @@ export const ByteChime = () => {
     // box shadow color is updated on border events
     // and invoked repeatedly to dim after border events
     // keep setState calls to 150ms frequency at maximum to try and keep this performant
-    throttle(setBoxShadowColor, 150),
+    // throttle(setBoxShadowColor, 150),
+    throttle(setBoxShadowColor, 120000),
+    // throttle(() => console.log("throttled"), 10000000),
     []
   );
   const [sketchConfig, setSketchConfig] = useState<ISketchConfigType>({
