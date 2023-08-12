@@ -12,8 +12,15 @@ type ThrottledSetBoxShadowOpacity =
  * each "sounddot" rendered to the canvas
  */
 export class SoundDot {
+  // sound stuff
   synth: Tone.MonoSynth;
   noteVelocity: number;
+  /**
+   * in the form of C4, D4, E4, etc.
+   */
+  possibleNotes: string[];
+  note: string;
+  // display stuff
   xPosition: number;
   yPosition: number;
   speedFactor: number;
@@ -32,12 +39,8 @@ export class SoundDot {
    * note: assumptions are made about canvas being a square with all sides equal
    */
   sketchBorderLength: number;
-  /**
-   * in the form of C4, D4, E4, etc.
-   */
-  possibleNotes: string[];
-  note: string;
   numberOfBorderEvents = 0;
+  // color stuff
   hue: number;
   colorVariance: number;
   saturation: number;
@@ -229,7 +232,7 @@ export class SoundDot {
         this.noteVelocity
       );
     } catch (e) {
-      // attempting to play dot errors on settings change
+      // attempting to play dot on settings change will occasionally throw errors
       // a possible to do is disabling playSound on settings change for a brief instant
       // until then...
       console.error(e);

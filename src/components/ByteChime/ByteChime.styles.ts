@@ -18,13 +18,18 @@ export const sliderAndLabel = {
 };
 
 export const selectContainer = {
-  display: "flex",
-  flexWrap: "wrap-reverse",
+  display: "grid",
+  gridTemplateRows: "auto auto",
+  gridTemplateColumns: { xs: "1fr 1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
   gap: "10px",
   marginBottom: "10px",
 };
 
 export const select = {
   color: "white",
-  flexGrow: 1,
+};
+
+export const selectFirst = {
+  ...select,
+  gridColumn: { xs: "1 / 3", sm: "1 / 3", md: "1" },
 };

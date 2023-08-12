@@ -81,7 +81,7 @@ export const ByteChime = () => {
     speed: 1,
     trail: -55,
     volume: -100,
-    waveform: "fatsquare",
+    waveform: "amsquare",
   });
 
   // change color of box shadow and header to match harmony color scheme

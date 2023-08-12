@@ -18,8 +18,6 @@ import {
   FormGroup,
   FormControlLabel,
   MenuItem,
-  Select,
-  SelectChangeEvent,
   Slider,
   TextField,
   Typography,
@@ -56,7 +54,7 @@ export const ControlPanel = ({
     }));
   };
 
-  const handleHarmony = (e: SelectChangeEvent<HarmonyOptions>) => {
+  const handleHarmony = (e: ChangeEvent<HTMLInputElement>) => {
     const newHarmony = e.target.value as HarmonyOptions;
     setSketchConfig((prev) => ({
       ...prev,
@@ -64,7 +62,7 @@ export const ControlPanel = ({
     }));
   };
 
-  const handleWaveform = (e: SelectChangeEvent<SynthOscillatorTypeOptions>) => {
+  const handleWaveform = (e: ChangeEvent<HTMLInputElement>) => {
     setSketchConfig((prev) => ({
       ...prev,
       waveform: e.target.value as SynthOscillatorTypeOptions,
@@ -134,39 +132,43 @@ export const ControlPanel = ({
   return (
     <Box sx={styles.inputsContainer}>
       <Box sx={styles.selectContainer}>
-        <Select
+        <TextField
+          select
+          variant="outlined"
+          defaultValue={favoritesList[0].name}
+          onChange={handleFavorite}
+          sx={styles.selectFirst}
+          label="Favorites"
+        >
+          {favoritesList.map((favoriteSetting) => (
+            <MenuItem key={favoriteSetting.name} value={favoriteSetting.name}>
+              {favoriteSetting.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
           value={sketchConfig.harmony}
           onChange={handleHarmony}
           sx={styles.select}
+          label="Harmony"
         >
           {Object.entries(harmonyOptions).map(([key, value]) => (
             <MenuItem key={key} value={key}>
               {value}
             </MenuItem>
           ))}
-        </Select>
-        <Select
+        </TextField>
+        <TextField
+          select
           value={sketchConfig.waveform}
           onChange={handleWaveform}
           sx={styles.select}
+          label="Waveform"
         >
           {Object.entries(synthOscillatorTypeOptions).map(([key, value]) => (
             <MenuItem key={key} value={key}>
               {value}
-            </MenuItem>
-          ))}
-        </Select>
-        <TextField
-          select
-          variant="outlined"
-          defaultValue={favoritesList[0].name}
-          onChange={handleFavorite}
-          sx={styles.select}
-          label="Favorites"
-        >
-          {favoritesList.map((favoriteSetting) => (
-            <MenuItem key={favoriteSetting.name} value={favoriteSetting.name}>
-              {favoriteSetting.name}
             </MenuItem>
           ))}
         </TextField>
