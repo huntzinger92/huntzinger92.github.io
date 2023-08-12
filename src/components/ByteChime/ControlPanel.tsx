@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import * as Tone from "tone";
 import {
   HarmonyOptions,
@@ -109,37 +109,6 @@ export const ControlPanel = ({
       }));
     }
   };
-
-  useEffect(() => {
-    const volumeHandler = (keydownEvent: KeyboardEvent) => {
-      alert(`keydownEvent.code: ${keydownEvent.code}`);
-      // if (keydownEvent.code === "AudioVolumeUp") {
-      //   setSketchConfig((prev) => ({
-      //     ...prev,
-      //     soundEnabled: true,
-      //     volume: convertLinearVolumeToDb(
-      //       convertLogVolumeToLinear(prev.volume) + 1 > 9
-      //         ? 9
-      //         : convertLogVolumeToLinear(prev.volume) + 1
-      //     ),
-      //   }));
-      // } else if (keydownEvent.code === "AudioVolumeDown") {
-      //   setSketchConfig((prev) => ({
-      //     ...prev,
-      //     soundEnabled: true,
-      //     volume: convertLinearVolumeToDb(
-      //       convertLogVolumeToLinear(prev.volume) - 1 < 0
-      //         ? 0
-      //         : convertLogVolumeToLinear(prev.volume) - 1
-      //     ),
-      //   }));
-      // }
-    };
-    window.addEventListener("keydown", volumeHandler);
-    return () => {
-      window.removeEventListener("keydown", volumeHandler);
-    };
-  }, [setSketchConfig]);
 
   const exponentialVolumeToLinearSliderValue = convertLogVolumeToLinear(
     sketchConfig.volume

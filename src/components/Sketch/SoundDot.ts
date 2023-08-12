@@ -200,7 +200,8 @@ export class SoundDot {
     // if dot is "lightened" from border event, gradually deligthten it back down to default light amount
     if (this.currentLightAmount > this.defaultLightAmount) {
       // make delightening speed dependent on dot speed (slowest speed ~= -.4, fastest speed ~=.95)
-      const delighteningSpeed = (0.11 * (this.xSpeed + this.ySpeed)) / 2 + 0.18;
+      const delighteningSpeed =
+        ((0.11 * (this.xSpeed + this.ySpeed)) / 2 + 0.18) * 2;
       this.currentLightAmount -= delighteningSpeed;
     }
     return `hsla(${this.hue}, ${this.saturation}%, ${this.currentLightAmount}%, 1)`;
@@ -245,6 +246,7 @@ export class SoundDot {
       (newHue ?? this.hue) + Math.random() * variance - variance / 2
     );
     const variedHue = randomHue < 5 ? 5 : randomHue;
+    console.log({ variedHue });
     this.hue = variedHue;
   }
 

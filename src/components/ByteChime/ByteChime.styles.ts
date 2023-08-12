@@ -13,8 +13,8 @@ export const inputsRow = {
 export const sliderAndLabel = { flexGrow: 1, padding: "5px" };
 
 export const selectContainer = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr",
+  display: "flex",
+  flexWrap: "wrap-reverse",
   gap: "10px",
   marginBottom: "10px",
 };

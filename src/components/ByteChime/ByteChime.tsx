@@ -51,7 +51,7 @@ export interface ISketchConfigType {
 export const ByteChime = () => {
   const theme = useTheme();
   const isAboveSmallScreen = useMediaQuery(theme.breakpoints.up("sm"));
-  const sketchSize = isAboveSmallScreen ? 500 : 325;
+  const sketchSize = isAboveSmallScreen ? 500 : 275;
 
   const [boxShadowColor, setBoxShadowColor] = useState({
     hue: 0,
@@ -90,10 +90,10 @@ export const ByteChime = () => {
     setBoxShadowColor({ hue, light, saturation: 50 });
   }, [sketchConfig.harmony]);
 
-  // if opacity is high following sound dot border event, gradually lower it
+  // if opacity is high following sound dot border event, gradually lower it at slow speeds
   useEffect(() => {
     let timeout: number;
-    if (boxShadowOpacity > 0.21) {
+    if (boxShadowOpacity > 0.21 && sketchConfig.speed < 4) {
       timeout = setTimeout(
         () => throttledSetBoxShadowOpacity((prev) => prev - 0.1),
         400
@@ -102,7 +102,7 @@ export const ByteChime = () => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [boxShadowOpacity, throttledSetBoxShadowOpacity]);
+  }, [boxShadowOpacity, sketchConfig.speed, throttledSetBoxShadowOpacity]);
 
   // memoizing the sketch allows us to update box shadow (glow effect) without rerendering sketch component
   const memoizedSketch = useMemo(() => {
@@ -126,15 +126,12 @@ export const ByteChime = () => {
   const { hue, saturation, light } = boxShadowColor;
 
   const sketchContainerStyle = {
-    boxShadow: `0 0 32px hsla(${hue}, ${saturation}%, ${light}%, ${boxShadowOpacity})`,
+    boxShadow: `0 0 20px hsla(${hue}, ${saturation}%, ${light}%, ${boxShadowOpacity})`,
     transition: "box-shadow 1s ease",
     display: "inline-flex",
   };
 
   const headerStyle = {
-    textShadow: `0px 0px 20px hsla(${hue}, ${saturation}%, ${
-      light - 5
-    }%, ${boxShadowOpacity})`,
     color: `hsl(${hue}, ${light}%, ${60}%)`,
     transition: "all 1s ease",
     marginBottom: "20px",
