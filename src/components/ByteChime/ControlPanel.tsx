@@ -12,6 +12,9 @@ import {
 } from "./ByteChime.constants";
 import {
   Box,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -25,11 +28,15 @@ import { ISketchConfigType } from "./ByteChime";
 export interface IControlPanelProps {
   sketchConfig: ISketchConfigType;
   setSketchConfig: Dispatch<SetStateAction<ISketchConfigType>>;
+  lowPerformanceMode: boolean;
+  setLowPerformanceMode: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ControlPanel = ({
   sketchConfig,
   setSketchConfig,
+  lowPerformanceMode,
+  setLowPerformanceMode,
 }: IControlPanelProps) => {
   const narrowNumberOrArrayToNum = (value: number | number[]) => {
     return typeof value === "number" ? value : value[0];
@@ -214,6 +221,20 @@ export const ControlPanel = ({
             onChange={(_, value) => handleTrail(value)}
           />
         </Box>
+      </Box>
+      <Box sx={styles.inputsRow}>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={lowPerformanceMode}
+                inputProps={{ "aria-label": "Low Performance Mode" }}
+                onChange={() => setLowPerformanceMode((prev) => !prev)}
+              />
+            }
+            label="Low Performance Mode"
+          />
+        </FormGroup>
       </Box>
     </Box>
   );

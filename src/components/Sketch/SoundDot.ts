@@ -4,6 +4,10 @@ import p5Types from "p5";
 import { pitchMap } from "./Sketch.constants";
 import { BorderTouchAnimation } from "./BorderTouchAnimation";
 
+type ThrottledSetBoxShadowOpacity =
+  | Dispatch<SetStateAction<number>>
+  | undefined;
+
 /**
  * each "sounddot" rendered to the canvas
  */
@@ -47,7 +51,7 @@ export class SoundDot {
    * every time dot touches border, a new border animation is added, then removed when it "dies" (see BorderTouchAnimation class)
    */
   borderAnimationSystems: BorderTouchAnimation[] = [];
-  throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
+  throttledSetBoxShadowOpacity: ThrottledSetBoxShadowOpacity;
 
   constructor({
     sketchBorderLength,
@@ -66,15 +70,16 @@ export class SoundDot {
     soundEnabled: boolean;
     synth: Tone.MonoSynth;
     noteVelocity: number;
-    throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
+    /**
+     * a state setter for sketch container's box shadow opacity, undefined in low performance mode
+     */
+    throttledSetBoxShadowOpacity: ThrottledSetBoxShadowOpacity;
   }) {
     // positional and directional stuff
     this.sketchBorderLength = sketchBorderLength;
     this.speedFactor = speedFactor;
     this.xPosition = Math.random() * (sketchBorderLength - 5);
     this.yPosition = Math.random() * (sketchBorderLength - 5);
-    // this.xSpeed = Math.random() * 2 + speedFactor;
-    // this.ySpeed = Math.random() * 2 + speedFactor;
     this.xSpeed = (Math.random() * 2 + speedFactor) * 1.5;
     this.ySpeed = (Math.random() * 2 + speedFactor) * 1.5;
     this.increasingX = Math.random() > 0.5;
@@ -87,7 +92,11 @@ export class SoundDot {
     // choose a random note from possible notes
     this.note =
       this.possibleNotes[Math.floor(Math.random() * this.possibleNotes.length)];
-    this.circleDiameter = Math.ceil(-0.46 * pitchMap[this.note] + 70);
+    // see this.setDiameter below for details on this
+    const diameterCoeffienct = this.sketchBorderLength / 500;
+    this.circleDiameter = Math.ceil(
+      (-0.46 * pitchMap[this.note] + 70) * diameterCoeffienct
+    );
     // color stuff
     // randomize hue by colorVariance property, below and above original hue
     // the more dissonant or unusual the mode, the greater the colorVariance value
@@ -122,7 +131,7 @@ export class SoundDot {
         this.defaultLightAmount - 10 < 10 ? 10 : this.defaultLightAmount - 10,
     });
     // update box shadow of sketch
-    this.throttledSetBoxShadowOpacity(1);
+    this.throttledSetBoxShadowOpacity?.(1);
     this.borderAnimationSystems.push(newBorderAnimationSystem);
     // keep track of border events
     this.numberOfBorderEvents++;
@@ -246,7 +255,6 @@ export class SoundDot {
       (newHue ?? this.hue) + Math.random() * variance - variance / 2
     );
     const variedHue = randomHue < 5 ? 5 : randomHue;
-    console.log({ variedHue });
     this.hue = variedHue;
   }
 
@@ -255,11 +263,17 @@ export class SoundDot {
    */
   setDiameter() {
     // make diameter dependent on pitch
-    // this formula assumes a default circle size of 40px
     // range of note pitch integers is 1 - 131
+    // when sketch canvas is 500px:
     // 40, 1 = 70
     // 40, 131 = 10
-    this.circleDiameter = Math.ceil(-0.46 * pitchMap[this.note] + 70);
+    // when sketch canvas is 250px:
+    // 20, 1 = 35
+    // 20, 131 = 5;
+    const diameterCoeffienct = this.sketchBorderLength / 500;
+    this.circleDiameter = Math.ceil(
+      (-0.46 * pitchMap[this.note] + 70) * diameterCoeffienct
+    );
   }
 
   /**
@@ -321,5 +335,14 @@ export class SoundDot {
       this.xSpeed = (Math.random() * 2 + newSpeedFactor) * 1.5;
       this.ySpeed = (Math.random() * 2 + newSpeedFactor) * 1.5;
     }
+  }
+
+  /**
+   * update the set box shadow opacity function
+   * we turn box shadow animation off in low performance mode,
+   * and ideally we'd like a way to do this without resetting the dots
+   */
+  setThrottledSetBoxShadowOpacity(newSetterFn: ThrottledSetBoxShadowOpacity) {
+    this.throttledSetBoxShadowOpacity = newSetterFn;
   }
 }

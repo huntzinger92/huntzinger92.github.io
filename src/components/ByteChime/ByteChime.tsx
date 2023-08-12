@@ -50,9 +50,10 @@ export interface ISketchConfigType {
 
 export const ByteChime = () => {
   const theme = useTheme();
-  const isAboveSmallScreen = useMediaQuery(theme.breakpoints.up("sm"));
-  const sketchSize = isAboveSmallScreen ? 500 : 275;
+  const miniMode = useMediaQuery(theme.breakpoints.down("md"));
+  const sketchSize = miniMode ? 250 : 500;
 
+  const [lowPerformanceMode, setLowPerformanceMode] = useState(miniMode);
   const [boxShadowColor, setBoxShadowColor] = useState({
     hue: 0,
     saturation: 0,
@@ -60,14 +61,13 @@ export const ByteChime = () => {
   });
   /**
    * on sound dot border event, we set opacity to 1
-   * please note that opacity is much more performant to animate than box shadow
    */
-  const [boxShadowOpacity, setBoxShadowOpacity] = useState(0);
-  // useCallback doesn't seem to know how to check for throttle dependencies, but we know an empty dep array is fine here
+  const [boxShadowOpacity, setBoxShadowOpacity] = useState(1);
+  // useCallback doesn't seem to know how to check for throttle dependencies
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledSetBoxShadowOpacity = useCallback(
     // box shadow color is updated on border events
-    // and invoked repeatedly to dim after border events
+    // and invoked repeatedly to dim after border events when not in lowPerformanceMode
     // keep setState calls to 400ms frequency at maximum to try and keep this performant
     throttle(setBoxShadowOpacity, 400),
     []
@@ -93,7 +93,11 @@ export const ByteChime = () => {
   // if opacity is high following sound dot border event, gradually lower it at slow speeds
   useEffect(() => {
     let timeout: number;
-    if (boxShadowOpacity > 0.21 && sketchConfig.speed < 4) {
+    if (
+      !lowPerformanceMode &&
+      boxShadowOpacity > 0.21 &&
+      sketchConfig.speed < 4
+    ) {
       timeout = setTimeout(
         () => throttledSetBoxShadowOpacity((prev) => prev - 0.1),
         400
@@ -102,7 +106,12 @@ export const ByteChime = () => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [boxShadowOpacity, sketchConfig.speed, throttledSetBoxShadowOpacity]);
+  }, [
+    boxShadowOpacity,
+    lowPerformanceMode,
+    sketchConfig.speed,
+    throttledSetBoxShadowOpacity,
+  ]);
 
   // memoizing the sketch allows us to update box shadow (glow effect) without rerendering sketch component
   const memoizedSketch = useMemo(() => {
@@ -116,12 +125,18 @@ export const ByteChime = () => {
     };
     return (
       <SketchComponent
+        lowPerformanceMode={lowPerformanceMode}
         throttledSetBoxShadowOpacity={throttledSetBoxShadowOpacity}
         sketchConfig={formattedSketchConfig}
         sketchSize={sketchSize}
       />
     );
-  }, [sketchConfig, sketchSize, throttledSetBoxShadowOpacity]);
+  }, [
+    lowPerformanceMode,
+    sketchConfig,
+    sketchSize,
+    throttledSetBoxShadowOpacity,
+  ]);
 
   const { hue, saturation, light } = boxShadowColor;
 
@@ -143,10 +158,14 @@ export const ByteChime = () => {
         Byte Chime
       </Typography>
       <Box sx={sketchContainerStyle}>{memoizedSketch}</Box>
-      <ControlPanel
-        sketchConfig={sketchConfig}
-        setSketchConfig={setSketchConfig}
-      />
+      <Box sx={{ maxWidth: sketchSize }}>
+        <ControlPanel
+          sketchConfig={sketchConfig}
+          setSketchConfig={setSketchConfig}
+          lowPerformanceMode={lowPerformanceMode}
+          setLowPerformanceMode={setLowPerformanceMode}
+        />
+      </Box>
     </Box>
   );
 };

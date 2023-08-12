@@ -3,7 +3,7 @@ import p5Types from "p5";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SoundDot } from "./SoundDot";
 import { getNotesAndColor } from "./Sketch.utils";
-import { filter, handleReverbCrossfade, synths } from "./Sound";
+import { filter, reverb, synths } from "./Sound";
 import { ISketchConfigType } from "../ByteChime/ByteChime";
 
 // create a "recommended settings" dropdown, named after stuff from your life
@@ -15,14 +15,20 @@ import { ISketchConfigType } from "../ByteChime/ByteChime";
 
 export interface ISketchComponentProps {
   /**
+   * given cpu intensive animations and sound, provide flag to tweak settings for slower devices
+   * defaults to true on small screen widths
+   */
+  lowPerformanceMode: boolean;
+  /**
    * a throttled state setter for container box shadow, used by SoundDots
    */
-  throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
+  throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>> | undefined;
   sketchSize: number;
   sketchConfig: ISketchConfigType;
 }
 
 export const SketchComponent = ({
+  lowPerformanceMode,
   throttledSetBoxShadowOpacity,
   sketchSize,
   sketchConfig: {
@@ -40,7 +46,16 @@ export const SketchComponent = ({
   const [soundDots, setSoundDots] = useState<SoundDot[]>([]);
 
   useEffect(() => {
-    handleReverbCrossfade(trail);
+    soundDots.forEach((dot) =>
+      dot.setThrottledSetBoxShadowOpacity(
+        lowPerformanceMode ? undefined : throttledSetBoxShadowOpacity
+      )
+    );
+  }, [lowPerformanceMode, soundDots, throttledSetBoxShadowOpacity]);
+
+  useEffect(() => {
+    const newReverbWet = -0.006923 * trail + 0.95; // convert range of 1 - 131 into normal range
+    reverb.wet.rampTo(newReverbWet, 0.5);
   }, [trail]);
 
   // update synth waveforms in response to user update
@@ -132,7 +147,7 @@ export const SketchComponent = ({
   const setup = (p5: p5Types, canvasParentRef: Element) => {
     // set framerate down from 60 for performance
     // note that this affects the visual speed of the dots!
-    p5.frameRate(37);
+    p5.frameRate(40);
     p5.createCanvas(sketchSize, sketchSize).parent(canvasParentRef);
   };
 
