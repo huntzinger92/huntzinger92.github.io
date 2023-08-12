@@ -18,11 +18,13 @@ export interface ISketchComponentProps {
    * a throttled state setter for container box shadow, used by SoundDots
    */
   throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
+  sketchSize: number;
   sketchConfig: ISketchConfigType;
 }
 
 export const SketchComponent = ({
   throttledSetBoxShadowOpacity,
+  sketchSize,
   sketchConfig: {
     density,
     harmony,
@@ -35,9 +37,6 @@ export const SketchComponent = ({
     waveform,
   },
 }: ISketchComponentProps) => {
-  // we assume a square canvas with equal sides
-  const sketchBorderLength = 500;
-
   const [soundDots, setSoundDots] = useState<SoundDot[]>([]);
 
   useEffect(() => {
@@ -104,7 +103,7 @@ export const SketchComponent = ({
         });
         newDots.push(
           new SoundDot({
-            sketchBorderLength,
+            sketchBorderLength: sketchSize,
             speedFactor: speed,
             possibleNotes,
             colorPalette,
@@ -124,18 +123,17 @@ export const SketchComponent = ({
     harmony,
     soundEnabled,
     range,
-    throttledSetBoxShadowOpacity,
+    sketchSize,
     soundDots,
     speed,
+    throttledSetBoxShadowOpacity,
   ]);
 
   const setup = (p5: p5Types, canvasParentRef: Element) => {
-    // set framerate to 40 down from 60 for performance
+    // set framerate down from 60 for performance
     // note that this affects the visual speed of the dots!
-    p5.frameRate(40);
-    p5.createCanvas(sketchBorderLength, sketchBorderLength).parent(
-      canvasParentRef
-    );
+    p5.frameRate(37);
+    p5.createCanvas(sketchSize, sketchSize).parent(canvasParentRef);
   };
 
   const draw = (p5: p5Types) => {

@@ -3,10 +3,8 @@ import { SketchComponent } from "../Sketch/Sketch";
 import {
   HarmonyOptions,
   SynthOscillatorTypeOptions,
-  convertLinearVolumeToDb,
-  convertLogVolumeToLinear,
 } from "./ByteChime.constants";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { throttle } from "lodash";
 import { harmonyColorLookup } from "../Sketch/Sketch.constants";
 import { ControlPanel } from "./ControlPanel";
@@ -51,6 +49,10 @@ export interface ISketchConfigType {
 }
 
 export const ByteChime = () => {
+  const theme = useTheme();
+  const isAboveSmallScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const sketchSize = isAboveSmallScreen ? 500 : 325;
+
   const [boxShadowColor, setBoxShadowColor] = useState({
     hue: 0,
     saturation: 0,
@@ -102,36 +104,6 @@ export const ByteChime = () => {
     };
   }, [boxShadowOpacity, throttledSetBoxShadowOpacity]);
 
-  useEffect(() => {
-    const volumeHandler = (keydownEvent: KeyboardEvent) => {
-      if (keydownEvent.code === "AudioVolumeUp") {
-        setSketchConfig((prev) => ({
-          ...prev,
-          soundEnabled: true,
-          volume: convertLinearVolumeToDb(
-            convertLogVolumeToLinear(prev.volume) + 1 > 9
-              ? 9
-              : convertLogVolumeToLinear(prev.volume) + 1
-          ),
-        }));
-      } else if (keydownEvent.code === "AudioVolumeDown") {
-        setSketchConfig((prev) => ({
-          ...prev,
-          soundEnabled: true,
-          volume: convertLinearVolumeToDb(
-            convertLogVolumeToLinear(prev.volume) - 1 < 0
-              ? 0
-              : convertLogVolumeToLinear(prev.volume) - 1
-          ),
-        }));
-      }
-    };
-    window.addEventListener("keydown", volumeHandler);
-    return () => {
-      window.removeEventListener("keydown", volumeHandler);
-    };
-  }, []);
-
   // memoizing the sketch allows us to update box shadow (glow effect) without rerendering sketch component
   const memoizedSketch = useMemo(() => {
     // we want to differ from the controlled input values a bit for convenience on the sketch component side
@@ -146,9 +118,10 @@ export const ByteChime = () => {
       <SketchComponent
         throttledSetBoxShadowOpacity={throttledSetBoxShadowOpacity}
         sketchConfig={formattedSketchConfig}
+        sketchSize={sketchSize}
       />
     );
-  }, [sketchConfig, throttledSetBoxShadowOpacity]);
+  }, [sketchConfig, sketchSize, throttledSetBoxShadowOpacity]);
 
   const { hue, saturation, light } = boxShadowColor;
 
@@ -168,7 +141,7 @@ export const ByteChime = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: sketchSize }}>
       <Typography sx={headerStyle} variant="h2">
         Byte Chime
       </Typography>

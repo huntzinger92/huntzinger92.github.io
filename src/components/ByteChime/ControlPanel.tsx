@@ -112,27 +112,28 @@ export const ControlPanel = ({
 
   useEffect(() => {
     const volumeHandler = (keydownEvent: KeyboardEvent) => {
-      if (keydownEvent.code === "AudioVolumeUp") {
-        setSketchConfig((prev) => ({
-          ...prev,
-          soundEnabled: true,
-          volume: convertLinearVolumeToDb(
-            convertLogVolumeToLinear(prev.volume) + 1 > 9
-              ? 9
-              : convertLogVolumeToLinear(prev.volume) + 1
-          ),
-        }));
-      } else if (keydownEvent.code === "AudioVolumeDown") {
-        setSketchConfig((prev) => ({
-          ...prev,
-          soundEnabled: true,
-          volume: convertLinearVolumeToDb(
-            convertLogVolumeToLinear(prev.volume) - 1 < 0
-              ? 0
-              : convertLogVolumeToLinear(prev.volume) - 1
-          ),
-        }));
-      }
+      alert(`keydownEvent.code: ${keydownEvent.code}`);
+      // if (keydownEvent.code === "AudioVolumeUp") {
+      //   setSketchConfig((prev) => ({
+      //     ...prev,
+      //     soundEnabled: true,
+      //     volume: convertLinearVolumeToDb(
+      //       convertLogVolumeToLinear(prev.volume) + 1 > 9
+      //         ? 9
+      //         : convertLogVolumeToLinear(prev.volume) + 1
+      //     ),
+      //   }));
+      // } else if (keydownEvent.code === "AudioVolumeDown") {
+      //   setSketchConfig((prev) => ({
+      //     ...prev,
+      //     soundEnabled: true,
+      //     volume: convertLinearVolumeToDb(
+      //       convertLogVolumeToLinear(prev.volume) - 1 < 0
+      //         ? 0
+      //         : convertLogVolumeToLinear(prev.volume) - 1
+      //     ),
+      //   }));
+      // }
     };
     window.addEventListener("keydown", volumeHandler);
     return () => {
@@ -192,7 +193,7 @@ export const ControlPanel = ({
           <Typography>Density</Typography>
           <Slider
             min={1}
-            max={12}
+            max={10}
             value={sketchConfig.density}
             onChange={(_, value) => handleDensity(value)}
           />
@@ -221,7 +222,7 @@ export const ControlPanel = ({
           <Typography>Speed</Typography>
           <Slider
             min={0.1}
-            max={25}
+            max={15}
             value={sketchConfig.speed}
             onChange={(_, value) => handleSpeed(value)}
           />
