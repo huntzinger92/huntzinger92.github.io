@@ -47,9 +47,7 @@ export class SoundDot {
    * every time dot touches border, a new border animation is added, then removed when it "dies" (see BorderTouchAnimation class)
    */
   borderAnimationSystems: BorderTouchAnimation[] = [];
-  setBoxShadowColor: Dispatch<
-    SetStateAction<{ hue: number; saturation: number; light: number }>
-  >;
+  throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
 
   constructor({
     sketchBorderLength,
@@ -59,7 +57,7 @@ export class SoundDot {
     soundEnabled,
     synth,
     noteVelocity,
-    setBoxShadowColor,
+    throttledSetBoxShadowOpacity,
   }: {
     sketchBorderLength: number;
     speedFactor: number;
@@ -68,17 +66,17 @@ export class SoundDot {
     soundEnabled: boolean;
     synth: Tone.MonoSynth;
     noteVelocity: number;
-    setBoxShadowColor: Dispatch<
-      SetStateAction<{ hue: number; saturation: number; light: number }>
-    >;
+    throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
   }) {
     // positional and directional stuff
     this.sketchBorderLength = sketchBorderLength;
     this.speedFactor = speedFactor;
     this.xPosition = Math.random() * (sketchBorderLength - 5);
     this.yPosition = Math.random() * (sketchBorderLength - 5);
-    this.xSpeed = Math.random() * 2 + speedFactor;
-    this.ySpeed = Math.random() * 2 + speedFactor;
+    // this.xSpeed = Math.random() * 2 + speedFactor;
+    // this.ySpeed = Math.random() * 2 + speedFactor;
+    this.xSpeed = (Math.random() * 2 + speedFactor) * 1.5;
+    this.ySpeed = (Math.random() * 2 + speedFactor) * 1.5;
     this.increasingX = Math.random() > 0.5;
     this.increasingY = Math.random() > 0.5;
     // sound stuff
@@ -104,7 +102,7 @@ export class SoundDot {
     this.saturation = Math.floor(8.125 * this.noteVelocity + 171.25);
     this.defaultLightAmount = light;
     this.currentLightAmount = light;
-    this.setBoxShadowColor = setBoxShadowColor;
+    this.throttledSetBoxShadowOpacity = throttledSetBoxShadowOpacity;
   }
 
   /**
@@ -124,11 +122,7 @@ export class SoundDot {
         this.defaultLightAmount - 10 < 10 ? 10 : this.defaultLightAmount - 10,
     });
     // update box shadow of sketch
-    this.setBoxShadowColor({
-      hue: this.hue,
-      saturation: this.saturation,
-      light: this.currentLightAmount,
-    });
+    this.throttledSetBoxShadowOpacity(1);
     this.borderAnimationSystems.push(newBorderAnimationSystem);
     // keep track of border events
     this.numberOfBorderEvents++;
@@ -322,8 +316,8 @@ export class SoundDot {
     // prevent unnecessary updates from initial, unnecessary useEffect update
     if (newSpeedFactor !== this.speedFactor) {
       this.speedFactor = newSpeedFactor;
-      this.xSpeed = Math.random() * 2 + newSpeedFactor;
-      this.ySpeed = Math.random() * 2 + newSpeedFactor;
+      this.xSpeed = (Math.random() * 2 + newSpeedFactor) * 1.5;
+      this.ySpeed = (Math.random() * 2 + newSpeedFactor) * 1.5;
     }
   }
 }

@@ -17,14 +17,12 @@ export interface ISketchComponentProps {
   /**
    * a throttled state setter for container box shadow, used by SoundDots
    */
-  setBoxShadowColor: Dispatch<
-    SetStateAction<{ hue: number; saturation: number; light: number }>
-  >;
+  throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
   sketchConfig: ISketchConfigType;
 }
 
 export const SketchComponent = ({
-  setBoxShadowColor,
+  throttledSetBoxShadowOpacity,
   sketchConfig: {
     density,
     harmony,
@@ -49,6 +47,7 @@ export const SketchComponent = ({
   // update synth waveforms in response to user update
   useEffect(() => {
     synths.forEach((synth) => (synth.oscillator.type = waveform));
+    // synths.forEach((synth) => (synth. = waveform));
   }, [waveform]);
 
   // update synth volume in response to user update
@@ -112,7 +111,7 @@ export const SketchComponent = ({
             soundEnabled,
             synth: currentSynth,
             noteVelocity,
-            setBoxShadowColor,
+            throttledSetBoxShadowOpacity,
           })
         );
       }
@@ -125,12 +124,15 @@ export const SketchComponent = ({
     harmony,
     soundEnabled,
     range,
-    setBoxShadowColor,
+    throttledSetBoxShadowOpacity,
     soundDots,
     speed,
   ]);
 
   const setup = (p5: p5Types, canvasParentRef: Element) => {
+    // set framerate to 40 down from 60 for performance
+    // note that this affects the visual speed of the dots!
+    p5.frameRate(40);
     p5.createCanvas(sketchBorderLength, sketchBorderLength).parent(
       canvasParentRef
     );
