@@ -20,7 +20,7 @@ export class SoundDot {
    */
   possibleNotes: string[];
   note: string;
-  // display stuff
+  // positional and directional stuff
   xPosition: number;
   yPosition: number;
   speedFactor: number;
@@ -108,11 +108,12 @@ export class SoundDot {
     // randomize hue by colorVariance property, below and above original hue
     // the more dissonant or unusual the mode, the greater the colorVariance value
     this.colorVariance = colorVariance;
-    // generate random hue, bottom out at 5
+    // generate random hue
     const randomHue = Math.floor(
       hue + Math.random() * this.colorVariance - this.colorVariance / 2
     );
-    const variedHue = randomHue < 5 ? 5 : randomHue;
+    // bottom out hue property at 5
+    const variedHue = Math.max(randomHue, 5);
     this.hue = variedHue;
     // given random note velocity, output of 25% to 90%
     this.saturation = Math.floor(8.125 * this.noteVelocity + 171.25);
@@ -134,8 +135,7 @@ export class SoundDot {
       hue: this.hue,
       saturation: this.saturation,
       // dim border animation response from original color, bottom out at lightness of 10
-      light:
-        this.defaultLightAmount - 10 < 10 ? 10 : this.defaultLightAmount - 10,
+      light: Math.max(this.defaultLightAmount - 10, 10),
     });
     // update box shadow of sketch
     this.throttledSetBoxShadowOpacity?.(1);
@@ -257,11 +257,12 @@ export class SoundDot {
     // if we have a newHue, use original color variance
     // else, use fraction of colorVariance to let colors very gradually "drift" away from their original hue
     const variance = newHue ? this.colorVariance : this.colorVariance / 10;
-    // generate random hue, bottom out at 5
+    // generate random hue
     const randomHue = Math.floor(
       (newHue ?? this.hue) + Math.random() * variance - variance / 2
     );
-    const variedHue = randomHue < 5 ? 5 : randomHue;
+    // bottom out at 5
+    const variedHue = Math.max(5, randomHue);
     this.hue = variedHue;
   }
 
