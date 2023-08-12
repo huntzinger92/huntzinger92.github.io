@@ -6,13 +6,6 @@ import { getNotesAndColor } from "./Sketch.utils";
 import { filter, reverb, synths } from "./Sound";
 import { ISketchConfigType } from "../ByteChime/ByteChime";
 
-// create a "recommended settings" dropdown, named after stuff from your life
-// cleanup styles a bit
-// figure out better style/placement for input elements
-// deploy on its own website
-// build personal website
-// write article
-
 export interface ISketchComponentProps {
   /**
    * we use a different frame rate depending on performance mode
@@ -50,6 +43,7 @@ export const SketchComponent = ({
 }: ISketchComponentProps) => {
   const [soundDots, setSoundDots] = useState<SoundDot[]>([]);
 
+  // only allow box shadow opacity updating from soundDots when not in lowPerformanceMode
   useEffect(() => {
     soundDots.forEach((dot) =>
       dot.setThrottledSetBoxShadowOpacity(
@@ -58,6 +52,7 @@ export const SketchComponent = ({
     );
   }, [lowPerformanceMode, soundDots, throttledSetBoxShadowOpacity]);
 
+  // as trail value decreases, increase reverb wet value
   useEffect(() => {
     const newReverbWet = -0.006923 * trail + 0.95; // convert range of 1 - 131 into normal range
     reverb.wet.rampTo(newReverbWet, 0.5);
@@ -66,7 +61,6 @@ export const SketchComponent = ({
   // update synth waveforms in response to user update
   useEffect(() => {
     synths.forEach((synth) => (synth.oscillator.type = waveform));
-    // synths.forEach((synth) => (synth. = waveform));
   }, [waveform]);
 
   // update synth volume in response to user update
@@ -76,7 +70,7 @@ export const SketchComponent = ({
 
   // keep filter updated with user selected filter freq
   useEffect(() => {
-    filter.frequency.rampTo(filterFrequency, 0.1);
+    filter.frequency.rampTo(filterFrequency, 0.75);
   }, [filterFrequency]);
 
   // when speed updates, update each soundDots

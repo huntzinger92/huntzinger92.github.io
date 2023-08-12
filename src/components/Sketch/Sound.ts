@@ -10,7 +10,8 @@ export const reverb = new Tone.Reverb({
   wet: 0.5,
 }).connect(filter);
 
-// use array of synths so we can play many dot sounds at once (had issues with polysynth api, unfortunately)
+// use array of synths so we can play many dot sounds at once
+// (had issues with changing osc type with polysynth api, unfortunately)
 // these synths are divided among the sound dots as they're generated
 export const synths = [...Array(6)].map(() =>
   new Tone.MonoSynth(synthConfiguration).connect(reverb)

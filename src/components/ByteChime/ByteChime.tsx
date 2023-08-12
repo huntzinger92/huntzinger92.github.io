@@ -144,13 +144,16 @@ export const ByteChime = () => {
 
   const sketchContainerStyle = {
     boxShadow: `0 0 20px hsla(${hue}, ${saturation}%, ${light}%, ${boxShadowOpacity})`,
-    transition: "box-shadow 1s ease",
+    transition: "box-shadow .5s ease",
     display: "inline-flex",
   };
 
   const headerStyle = {
-    color: `hsl(${hue}, ${light}%, ${60}%)`,
-    transition: "all 1s ease",
+    color: `hsla(${hue}, ${light}%, ${60}%, ${Math.max(
+      boxShadowOpacity,
+      0.65
+    )})`,
+    transition: "all .5s ease",
     marginBottom: "20px",
   };
 

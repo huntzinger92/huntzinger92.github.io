@@ -33,8 +33,8 @@ export type SynthOscillatorTypeOptions =
 export const maxTrail = 110;
 export const maxDensityHighPerformance = 12;
 export const maxDensityLowPerformance = 8;
-export const maxSpeedHighPerformance = 15;
-export const maxSpeedLowPerformance = 10;
+export const maxSpeedHighPerformance = 25;
+export const maxSpeedLowPerformance = 12;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
   name: string;
@@ -57,7 +57,7 @@ export const favoritesList: IFavoriteSetting[] = [
     harmony: "chromatic",
     name: "Blaze's Two Brain Cells",
     range: 3,
-    speed: 35, // easter egg - this amount significantly exceeds the speed limit imposed by the UI (just Blaze things)
+    speed: 55, // easter egg - this amount significantly exceeds the speed limit imposed by the UI (just Blaze things)
     trail: -105,
     waveform: "fmsawtooth30",
     volume: convertLinearVolumeToDb(6),
@@ -67,7 +67,7 @@ export const favoritesList: IFavoriteSetting[] = [
     filterFrequency: 7728.52350000832,
     harmony: "wholeTone",
     range: 6,
-    speed: 15,
+    speed: 25,
     trail: -5,
     volume: -29.989450809116633,
     waveform: "fattriangle5",
@@ -78,7 +78,7 @@ export const favoritesList: IFavoriteSetting[] = [
     filterFrequency: 10415.385763505483,
     harmony: "lydianDominant",
     range: 0,
-    speed: 10,
+    speed: 12,
     trail: -60,
     volume: -15.352908516093876,
     waveform: "fattriangle5",
@@ -123,7 +123,7 @@ export const favoritesList: IFavoriteSetting[] = [
     harmony: "minorPentatonic",
     range: 6,
     soundEnabled: true,
-    speed: 14,
+    speed: 20,
     trail: -13,
     volume: -29.989450809116633,
     waveform: "pwm",

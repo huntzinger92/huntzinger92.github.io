@@ -84,8 +84,8 @@ export class SoundDot {
     this.frameRate = frameRate;
     this.xPosition = Math.random() * (sketchBorderLength - 5);
     this.yPosition = Math.random() * (sketchBorderLength - 5);
-    this.xSpeed = ((Math.random() * 2 + speedFactor) * 45) / frameRate; // vary speed depending on frameRate
-    this.ySpeed = ((Math.random() * 2 + speedFactor) * 45) / frameRate;
+    this.xSpeed = ((Math.random() * 2 + speedFactor) * 30) / frameRate; // vary speed depending on frameRate
+    this.ySpeed = ((Math.random() * 2 + speedFactor) * 30) / frameRate;
     this.increasingX = Math.random() > 0.5;
     this.increasingY = Math.random() > 0.5;
     // sound stuff
@@ -344,9 +344,9 @@ export class SoundDot {
     if (newSpeedFactor !== this.speedFactor) {
       this.speedFactor = newSpeedFactor;
       this.xSpeed =
-        ((Math.random() * 2 + newSpeedFactor) * 45) / this.frameRate; // vary speed depending on frameRate
+        ((Math.random() * 2 + newSpeedFactor) * 30) / this.frameRate; // vary speed depending on frameRate
       this.ySpeed =
-        ((Math.random() * 2 + newSpeedFactor) * 45) / this.frameRate;
+        ((Math.random() * 2 + newSpeedFactor) * 30) / this.frameRate;
     }
   }
 

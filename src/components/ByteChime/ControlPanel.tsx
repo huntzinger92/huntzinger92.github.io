@@ -203,8 +203,6 @@ export const ControlPanel = ({
             onChange={(_, value) => handleFilter(value)}
           />
         </Box>
-      </Box>
-      <Box sx={styles.inputsRow}>
         <Box sx={styles.sliderAndLabel}>
           <Typography>Speed</Typography>
           <Slider
@@ -236,8 +234,6 @@ export const ControlPanel = ({
             onChange={(_, value) => handleTrail(value)}
           />
         </Box>
-      </Box>
-      <Box sx={styles.inputsRow}>
         <FormGroup>
           <FormControlLabel
             control={
