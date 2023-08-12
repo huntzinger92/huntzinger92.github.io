@@ -3,10 +3,12 @@ import * as Tone from "tone";
 import {
   HarmonyOptions,
   SynthOscillatorTypeOptions,
-  convertLinearVolumeToDb,
-  convertLogVolumeToLinear,
   favoritesList,
   harmonyOptions,
+  maxDensityHighPerformance,
+  maxDensityLowPerformance,
+  maxSpeedHighPerformance,
+  maxSpeedLowPerformance,
   maxTrail,
   synthOscillatorTypeOptions,
 } from "./ByteChime.constants";
@@ -24,6 +26,11 @@ import {
 } from "@mui/material";
 import * as styles from "./ByteChime.styles";
 import { ISketchConfigType } from "./ByteChime";
+import {
+  convertLinearVolumeToDb,
+  convertLogVolumeToLinear,
+  validateSketchConfigFavorite,
+} from "./ByteChime.utils";
 
 export interface IControlPanelProps {
   sketchConfig: ISketchConfigType;
@@ -111,8 +118,8 @@ export const ControlPanel = ({
     if (matchingConfig) {
       setSketchConfig((prev) => ({
         ...prev,
-        ...matchingConfig,
         soundEnabled: true,
+        ...validateSketchConfigFavorite(matchingConfig, lowPerformanceMode),
       }));
     }
   };
@@ -169,7 +176,11 @@ export const ControlPanel = ({
           <Typography>Density</Typography>
           <Slider
             min={1}
-            max={10}
+            max={
+              lowPerformanceMode
+                ? maxDensityLowPerformance
+                : maxDensityHighPerformance
+            }
             value={sketchConfig.density}
             onChange={(_, value) => handleDensity(value)}
           />
@@ -198,7 +209,11 @@ export const ControlPanel = ({
           <Typography>Speed</Typography>
           <Slider
             min={0.1}
-            max={15}
+            max={
+              lowPerformanceMode
+                ? maxSpeedLowPerformance
+                : maxSpeedHighPerformance
+            }
             value={sketchConfig.speed}
             onChange={(_, value) => handleSpeed(value)}
           />

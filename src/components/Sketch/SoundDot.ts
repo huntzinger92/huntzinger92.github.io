@@ -52,8 +52,10 @@ export class SoundDot {
    */
   borderAnimationSystems: BorderTouchAnimation[] = [];
   throttledSetBoxShadowOpacity: ThrottledSetBoxShadowOpacity;
+  frameRate: 30 | 60;
 
   constructor({
+    frameRate,
     sketchBorderLength,
     speedFactor,
     possibleNotes,
@@ -63,6 +65,7 @@ export class SoundDot {
     noteVelocity,
     throttledSetBoxShadowOpacity,
   }: {
+    frameRate: 30 | 60;
     sketchBorderLength: number;
     speedFactor: number;
     possibleNotes: string[];
@@ -78,10 +81,11 @@ export class SoundDot {
     // positional and directional stuff
     this.sketchBorderLength = sketchBorderLength;
     this.speedFactor = speedFactor;
+    this.frameRate = frameRate;
     this.xPosition = Math.random() * (sketchBorderLength - 5);
     this.yPosition = Math.random() * (sketchBorderLength - 5);
-    this.xSpeed = (Math.random() * 2 + speedFactor) * 1.5;
-    this.ySpeed = (Math.random() * 2 + speedFactor) * 1.5;
+    this.xSpeed = ((Math.random() * 2 + speedFactor) * 45) / frameRate; // vary speed depending on frameRate
+    this.ySpeed = ((Math.random() * 2 + speedFactor) * 45) / frameRate;
     this.increasingX = Math.random() > 0.5;
     this.increasingY = Math.random() > 0.5;
     // sound stuff
@@ -328,12 +332,21 @@ export class SoundDot {
   /**
    * class setter for speed values for user update
    */
-  setSpeed(newSpeedFactor: number) {
+  setSpeedAndFrameRate(newSpeedFactor: number, newFrameRate: 30 | 60) {
+    if (newFrameRate !== this.frameRate) {
+      const oldFrameRate = this.frameRate;
+      // update speed without changing direction of dot (like Math.random() will below)
+      this.xSpeed = (this.xSpeed * oldFrameRate) / newFrameRate;
+      this.ySpeed = (this.ySpeed * oldFrameRate) / newFrameRate;
+      this.frameRate = newFrameRate;
+    }
     // prevent unnecessary updates from initial, unnecessary useEffect update
     if (newSpeedFactor !== this.speedFactor) {
       this.speedFactor = newSpeedFactor;
-      this.xSpeed = (Math.random() * 2 + newSpeedFactor) * 1.5;
-      this.ySpeed = (Math.random() * 2 + newSpeedFactor) * 1.5;
+      this.xSpeed =
+        ((Math.random() * 2 + newSpeedFactor) * 45) / this.frameRate; // vary speed depending on frameRate
+      this.ySpeed =
+        ((Math.random() * 2 + newSpeedFactor) * 45) / this.frameRate;
     }
   }
 

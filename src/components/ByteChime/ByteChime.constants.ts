@@ -1,4 +1,5 @@
 import { ISketchConfigType } from "./ByteChime";
+import { convertLinearVolumeToDb } from "./ByteChime.utils";
 
 export const harmonyOptions = {
   chromatic: "Chromatic",
@@ -30,13 +31,10 @@ export type SynthOscillatorTypeOptions =
   keyof typeof synthOscillatorTypeOptions;
 
 export const maxTrail = 110;
-
-export const convertLinearVolumeToDb = (sliderVolume: number) =>
-  (Math.log(sliderVolume) * -43.5 + 100) * -1;
-
-export const convertLogVolumeToLinear = (volumeDb: number) => {
-  return Math.E ** ((-1 * volumeDb - 100) / -43.5);
-};
+export const maxDensityHighPerformance = 12;
+export const maxDensityLowPerformance = 8;
+export const maxSpeedHighPerformance = 15;
+export const maxSpeedLowPerformance = 10;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
   name: string;
@@ -59,7 +57,7 @@ export const favoritesList: IFavoriteSetting[] = [
     harmony: "chromatic",
     name: "Blaze's Two Brain Cells",
     range: 3,
-    speed: 35, // easter egg - 50 significantly exceeds the speed limit imposed by the UI
+    speed: 35, // easter egg - this amount significantly exceeds the speed limit imposed by the UI (just Blaze things)
     trail: -105,
     waveform: "fmsawtooth30",
     volume: convertLinearVolumeToDb(6),

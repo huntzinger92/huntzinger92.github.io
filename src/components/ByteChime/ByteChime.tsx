@@ -123,8 +123,10 @@ export const ByteChime = () => {
       speed: Math.ceil(sketchConfig.speed),
       trail: Math.abs(sketchConfig.trail),
     };
+    const frameRate = lowPerformanceMode ? 30 : 60;
     return (
       <SketchComponent
+        frameRate={frameRate}
         lowPerformanceMode={lowPerformanceMode}
         throttledSetBoxShadowOpacity={throttledSetBoxShadowOpacity}
         sketchConfig={formattedSketchConfig}

@@ -15,6 +15,10 @@ import { ISketchConfigType } from "../ByteChime/ByteChime";
 
 export interface ISketchComponentProps {
   /**
+   * we use a different frame rate depending on performance mode
+   */
+  frameRate: 30 | 60;
+  /**
    * given cpu intensive animations and sound, provide flag to tweak settings for slower devices
    * defaults to true on small screen widths
    */
@@ -28,6 +32,7 @@ export interface ISketchComponentProps {
 }
 
 export const SketchComponent = ({
+  frameRate,
   lowPerformanceMode,
   throttledSetBoxShadowOpacity,
   sketchSize,
@@ -76,8 +81,10 @@ export const SketchComponent = ({
 
   // when speed updates, update each soundDots
   useEffect(() => {
-    soundDots.forEach((soundDot) => soundDot.setSpeed(speed));
-  }, [soundDots, speed]);
+    soundDots.forEach((soundDot) =>
+      soundDot.setSpeedAndFrameRate(speed, frameRate)
+    );
+  }, [soundDots, speed, frameRate]);
 
   // when sound enabled updates, update each soundDot
   useEffect(() => {
@@ -126,6 +133,7 @@ export const SketchComponent = ({
             synth: currentSynth,
             noteVelocity,
             throttledSetBoxShadowOpacity,
+            frameRate,
           })
         );
       }
@@ -142,16 +150,17 @@ export const SketchComponent = ({
     soundDots,
     speed,
     throttledSetBoxShadowOpacity,
+    frameRate,
   ]);
 
   const setup = (p5: p5Types, canvasParentRef: Element) => {
-    // set framerate down from 60 for performance
-    // note that this affects the visual speed of the dots!
-    p5.frameRate(40);
     p5.createCanvas(sketchSize, sketchSize).parent(canvasParentRef);
   };
 
   const draw = (p5: p5Types) => {
+    // set framerate down from 60 for performance
+    // note that this affects the visual speed of the dots!
+    p5.frameRate(frameRate);
     p5.background(0, 0, 0, trail);
     soundDots.forEach((soundDot) => {
       soundDot.callEllipse(p5);
