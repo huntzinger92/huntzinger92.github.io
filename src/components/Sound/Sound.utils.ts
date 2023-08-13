@@ -1,4 +1,4 @@
-import { harmonyColorLookup, harmonyLookup } from "./Sketch.constants";
+import { harmonyColorLookup, harmonyLookup } from "./Sound.constants";
 
 /**
  * generates a series of wider octave ranges, going "middle out" from 4

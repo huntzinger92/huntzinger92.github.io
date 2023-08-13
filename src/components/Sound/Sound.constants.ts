@@ -11,7 +11,7 @@ import {
   wholeTone,
   stackedFifths,
   stackedFourths,
-} from "./Sketch.scales";
+} from "./Sound.scales";
 import * as Tone from "tone";
 
 export const harmonyLookup = {

@@ -6,8 +6,9 @@ import {
 } from "./ByteChime.constants";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { throttle } from "lodash";
-import { harmonyColorLookup } from "../Sketch/Sketch.constants";
+import { harmonyColorLookup } from "../Sound/Sound.constants";
 import { ControlPanel } from "./ControlPanel";
+import { useSound } from "../Sound/useSound";
 
 export interface ISketchConfigType {
   /**
@@ -39,7 +40,7 @@ export interface ISketchConfigType {
    */
   trail: number;
   /**
-   * how loud the dots are
+   * how loud the dots are, in normal range
    */
   volume: number;
   /**
@@ -80,7 +81,7 @@ export const ByteChime = () => {
     soundEnabled: false,
     speed: 1,
     trail: -55,
-    volume: -100,
+    volume: 0,
     waveform: "amsquare",
   });
 
@@ -113,32 +114,27 @@ export const ByteChime = () => {
     throttledSetBoxShadowOpacity,
   ]);
 
-  // memoizing the sketch allows us to update box shadow (glow effect) without rerendering sketch component
-  const memoizedSketch = useMemo(() => {
-    // we want to differ from the controlled input values a bit for convenience on the sketch component side
-    const formattedSketchConfig = {
-      ...sketchConfig,
-      density: Math.ceil(sketchConfig.density),
-      range: Math.ceil(sketchConfig.range),
-      speed: Math.ceil(sketchConfig.speed),
-      trail: Math.abs(sketchConfig.trail),
-    };
-    const frameRate = lowPerformanceMode ? 30 : 60;
-    return (
-      <SketchComponent
-        frameRate={frameRate}
-        lowPerformanceMode={lowPerformanceMode}
-        throttledSetBoxShadowOpacity={throttledSetBoxShadowOpacity}
-        sketchConfig={formattedSketchConfig}
-        sketchSize={sketchSize}
-      />
-    );
-  }, [
+  const frameRate = lowPerformanceMode ? 30 : 60;
+
+  const { soundDots } = useSound({
+    frameRate,
     lowPerformanceMode,
     sketchConfig,
     sketchSize,
     throttledSetBoxShadowOpacity,
-  ]);
+  });
+
+  // memoizing the sketch allows us to update box shadow (glow effect) without rerendering sketch component
+  const memoizedSketch = useMemo(() => {
+    return (
+      <SketchComponent
+        frameRate={frameRate}
+        sketchSize={sketchSize}
+        soundDots={soundDots}
+        trail={Math.abs(sketchConfig.trail)}
+      />
+    );
+  }, [frameRate, sketchConfig, sketchSize, soundDots]);
 
   const { hue, saturation, light } = boxShadowColor;
 
@@ -156,6 +152,8 @@ export const ByteChime = () => {
     transition: "all .5s ease",
     marginBottom: "20px",
   };
+
+  console.log({ sketchConfig });
 
   return (
     <Box sx={{ maxWidth: sketchSize }}>

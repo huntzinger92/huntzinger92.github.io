@@ -3,14 +3,6 @@ import {
   maxDensityLowPerformance,
   maxSpeedLowPerformance,
 } from "./ByteChime.constants";
-
-export const convertLinearVolumeToDb = (sliderVolume: number) =>
-  (Math.log(sliderVolume) * -43.5 + 100) * -1;
-
-export const convertLogVolumeToLinear = (volumeDb: number) => {
-  return Math.E ** ((-1 * volumeDb - 100) / -43.5);
-};
-
 /**
  * validate sketch setting favorites to make sure they are limited by lowPerformance limits
  */

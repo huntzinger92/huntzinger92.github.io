@@ -24,11 +24,7 @@ import {
 } from "@mui/material";
 import * as styles from "./ByteChime.styles";
 import { ISketchConfigType } from "./ByteChime";
-import {
-  convertLinearVolumeToDb,
-  convertLogVolumeToLinear,
-  validateSketchConfigFavorite,
-} from "./ByteChime.utils";
+import { validateSketchConfigFavorite } from "./ByteChime.utils";
 
 export interface IControlPanelProps {
   sketchConfig: ISketchConfigType;
@@ -87,11 +83,10 @@ export const ControlPanel = ({
     if (!sketchConfig.soundEnabled) {
       await Tone.start();
     }
-    const sliderVolume = narrowNumberOrArrayToNum(newVolume); // linear scale;
-    const volumeInDb = convertLinearVolumeToDb(sliderVolume); // 1 => -100db, 5 => -30db, 10 => 0db
+    const sliderVolume = narrowNumberOrArrayToNum(newVolume);
     setSketchConfig((prev) => ({
       ...prev,
-      volume: volumeInDb,
+      volume: sliderVolume,
       soundEnabled: true,
     }));
   };
@@ -121,10 +116,6 @@ export const ControlPanel = ({
       }));
     }
   };
-
-  const exponentialVolumeToLinearSliderValue = convertLogVolumeToLinear(
-    sketchConfig.volume
-  );
 
   const exponentialFrequencyToLinearSliderValue =
     Math.log(sketchConfig.filterFrequency / 300) / Math.log(1.038);
@@ -190,9 +181,10 @@ export const ControlPanel = ({
         <Box sx={styles.sliderAndLabel}>
           <Typography>Volume</Typography>
           <Slider
-            min={1}
-            max={9}
-            value={exponentialVolumeToLinearSliderValue}
+            step={0.01}
+            min={0}
+            max={0.8}
+            value={sketchConfig.volume}
             onChange={(_, value) => handleVolume(value)}
           />
         </Box>

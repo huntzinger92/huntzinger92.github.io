@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import * as Tone from "tone";
 import p5Types from "p5";
-import { pitchMap } from "./Sketch.constants";
+import { pitchMap } from "./Sound.constants";
 import { BorderTouchAnimation } from "./BorderTouchAnimation";
 
 type ThrottledSetBoxShadowOpacity =
@@ -13,7 +13,7 @@ type ThrottledSetBoxShadowOpacity =
  */
 export class SoundDot {
   // sound stuff
-  synth: Tone.MonoSynth;
+  synth: Tone.MonoSynth | Tone.PolySynth<Tone.MonoSynth>;
   noteVelocity: number;
   /**
    * in the form of C4, D4, E4, etc.
@@ -74,7 +74,7 @@ export class SoundDot {
     possibleNotes: string[];
     colorPalette: { hue: number; light: number; colorVariance: number };
     soundEnabled: boolean;
-    synth: Tone.MonoSynth;
+    synth: Tone.MonoSynth | Tone.PolySynth<Tone.MonoSynth>;
     noteVelocity: number;
     /**
      * a state setter for sketch container's box shadow opacity, undefined in low performance mode
@@ -352,6 +352,26 @@ export class SoundDot {
       this.ySpeed =
         ((Math.random() * 2 + newSpeedFactor) * 30) / this.frameRate;
     }
+  }
+
+  /**
+   * update synth associated with sound dot (typically done on lowPerformanceMode change)
+   */
+  setSynth(newSynth: Tone.MonoSynth | Tone.PolySynth<Tone.MonoSynth>) {
+    if (
+      this.synth instanceof Tone.MonoSynth &&
+      newSynth instanceof Tone.MonoSynth
+    ) {
+      return;
+    }
+    if (
+      this.synth instanceof Tone.PolySynth &&
+      newSynth instanceof Tone.PolySynth
+    ) {
+      return;
+    }
+    // only update synth when we need to (i.e., when switching in and out of performance mode)
+    this.synth = newSynth;
   }
 
   /**

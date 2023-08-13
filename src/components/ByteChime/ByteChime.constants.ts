@@ -1,5 +1,4 @@
 import { ISketchConfigType } from "./ByteChime";
-import { convertLinearVolumeToDb } from "./ByteChime.utils";
 
 export const harmonyOptions = {
   chromatic: "Chromatic",
@@ -31,9 +30,9 @@ export type SynthOscillatorTypeOptions =
   keyof typeof synthOscillatorTypeOptions;
 
 export const maxTrail = 110;
-export const maxDensityHighPerformance = 12;
+export const maxDensityHighPerformance = 10;
 export const maxDensityLowPerformance = 8;
-export const maxSpeedHighPerformance = 25;
+export const maxSpeedHighPerformance = 16;
 export const maxSpeedLowPerformance = 12;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
@@ -52,24 +51,36 @@ export const favoritesList: IFavoriteSetting[] = [
     name: "Default",
   },
   {
+    density: 6,
+    filterFrequency: 489.20667245748473,
+    harmony: "minorScale",
+    range: 0,
+    soundEnabled: true,
+    speed: 16,
+    trail: -36,
+    volume: 0.8,
+    waveform: "amsawtooth",
+    name: "A Bird's Whisper",
+  },
+  {
     density: 2,
     filterFrequency: 7500,
     harmony: "chromatic",
     name: "Blaze's Two Brain Cells",
     range: 3,
-    speed: 55, // easter egg - this amount significantly exceeds the speed limit imposed by the UI (just Blaze things)
+    speed: 45, // easter egg - this amount significantly exceeds the speed limit imposed by the UI (just Blaze things)
     trail: -105,
     waveform: "fmsawtooth30",
-    volume: convertLinearVolumeToDb(5),
+    volume: 0.5,
   },
   {
     density: 10,
     filterFrequency: 7728.52350000832,
     harmony: "wholeTone",
     range: 6,
-    speed: 25,
+    speed: 20,
     trail: -5,
-    volume: -29.989450809116633,
+    volume: 0.65,
     waveform: "amtriangle",
     name: "Kaleidoscope",
   },
@@ -80,7 +91,6 @@ export const favoritesList: IFavoriteSetting[] = [
     range: 0,
     speed: 12,
     trail: -60,
-    volume: -15.352908516093876,
     waveform: "amsine",
     name: "Krista",
   },
@@ -91,7 +101,7 @@ export const favoritesList: IFavoriteSetting[] = [
     range: 6,
     speed: 0.1,
     trail: -5,
-    volume: -17.352908516093876,
+    volume: 0.65,
     waveform: "pwm",
     name: "Ocean",
   },
@@ -102,7 +112,7 @@ export const favoritesList: IFavoriteSetting[] = [
     range: 3,
     speed: 4,
     trail: -36,
-    volume: -22.058463088579614,
+    volume: 0.5,
     waveform: "fmsawtooth30",
     name: "Rough in the Diamond",
   },
@@ -115,7 +125,19 @@ export const favoritesList: IFavoriteSetting[] = [
     speed: 3,
     trail: -55,
     waveform: "amtriangle",
-    volume: -17,
+    volume: 0.65,
+  },
+  {
+    density: 6,
+    filterFrequency: 10415.385763505483,
+    harmony: "chromatic",
+    range: 1,
+    soundEnabled: true,
+    speed: 2,
+    trail: -83,
+    volume: 0.8,
+    waveform: "amsine",
+    name: "True Neutral",
   },
   {
     density: 8,
@@ -123,9 +145,9 @@ export const favoritesList: IFavoriteSetting[] = [
     harmony: "minorPentatonic",
     range: 6,
     soundEnabled: true,
-    speed: 20,
+    speed: 19,
     trail: -13,
-    volume: -29.989450809116633,
+    volume: 0.6,
     waveform: "pwm",
     name: "Waimea Canyon",
   },
