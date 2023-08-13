@@ -159,7 +159,7 @@ export const ByteChime = () => {
 
   return (
     <Box sx={{ maxWidth: sketchSize }}>
-      <Typography sx={headerStyle} variant="h2">
+      <Typography sx={headerStyle} variant="h3">
         Byte Chime
       </Typography>
       <Box sx={sketchContainerStyle}>{memoizedSketch}</Box>

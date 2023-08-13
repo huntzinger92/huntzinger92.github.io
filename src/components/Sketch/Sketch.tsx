@@ -60,7 +60,7 @@ export const SketchComponent = ({
 
   // update synth waveforms in response to user update
   useEffect(() => {
-    synths.forEach((synth) => (synth.oscillator.type = waveform));
+    // synths.forEach((synth) => (synth.oscillator.type = waveform));
   }, [waveform]);
 
   // update synth volume in response to user update
