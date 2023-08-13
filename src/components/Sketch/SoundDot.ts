@@ -9,12 +9,11 @@ type ThrottledSetBoxShadowOpacity =
   | undefined;
 
 /**
- * each "sounddot" rendered to the canvas
+ * each "sound dot" rendered to the canvas
  */
 export class SoundDot {
   // sound stuff
-  // synth: Tone.MonoSynth;
-  synth: Tone.PolySynth<Tone.MonoSynth>;
+  synth: Tone.MonoSynth;
   noteVelocity: number;
   /**
    * in the form of C4, D4, E4, etc.
@@ -75,8 +74,7 @@ export class SoundDot {
     possibleNotes: string[];
     colorPalette: { hue: number; light: number; colorVariance: number };
     soundEnabled: boolean;
-    // synth: Tone.MonoSynth;
-    synth: Tone.PolySynth<Tone.MonoSynth>;
+    synth: Tone.MonoSynth;
     noteVelocity: number;
     /**
      * a state setter for sketch container's box shadow opacity, undefined in low performance mode
@@ -227,10 +225,9 @@ export class SoundDot {
 
   playSound() {
     try {
-      // console.log("playing sound...", this.note);
       this.synth.triggerAttackRelease(
         this.note,
-        0.3,
+        0.65,
         undefined,
         this.noteVelocity
       );

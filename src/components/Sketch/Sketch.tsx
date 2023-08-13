@@ -43,15 +43,6 @@ export const SketchComponent = ({
 }: ISketchComponentProps) => {
   const [soundDots, setSoundDots] = useState<SoundDot[]>([]);
 
-  // only allow box shadow opacity updating from soundDots when not in lowPerformanceMode
-  useEffect(() => {
-    soundDots.forEach((dot) =>
-      dot.setThrottledSetBoxShadowOpacity(
-        lowPerformanceMode ? undefined : throttledSetBoxShadowOpacity
-      )
-    );
-  }, [lowPerformanceMode, soundDots, throttledSetBoxShadowOpacity]);
-
   // as trail value decreases, increase reverb wet value
   useEffect(() => {
     const newReverbWet = -0.006923 * trail + 0.95; // convert range of 1 - 131 into normal range
@@ -60,7 +51,7 @@ export const SketchComponent = ({
 
   // update synth waveforms in response to user update
   useEffect(() => {
-    // synths.forEach((synth) => (synth.oscillator.type = waveform));
+    synths.forEach((synth) => (synth.oscillator.type = waveform));
   }, [waveform]);
 
   // update synth volume in response to user update
@@ -73,36 +64,9 @@ export const SketchComponent = ({
     filter.frequency.rampTo(filterFrequency, 0.75);
   }, [filterFrequency]);
 
-  // when speed updates, update each soundDots
+  // big sound dot updating useEffect
+  // consider creating util functions to make this more legible
   useEffect(() => {
-    soundDots.forEach((soundDot) =>
-      soundDot.setSpeedAndFrameRate(speed, frameRate)
-    );
-  }, [soundDots, speed, frameRate]);
-
-  // when sound enabled updates, update each soundDot
-  useEffect(() => {
-    soundDots.forEach((soundDot) => soundDot.setSoundEnabled(soundEnabled));
-  }, [soundDots, soundEnabled]);
-
-  // when harmony, range, or filter freq updates, update possible notes and color of each dot
-  useEffect(() => {
-    const { possibleNotes, colorPalette } = getNotesAndColor({
-      newHarmony: harmony,
-      newRange: range,
-      filterFrequency,
-    });
-    soundDots.forEach((soundDot) =>
-      soundDot.setNewNoteAndColorProperties({ possibleNotes, colorPalette })
-    );
-  }, [soundDots, harmony, range, filterFrequency]);
-
-  // when density updates add or remove soundDots as needed
-  useEffect(() => {
-    if (soundDots.length > density) {
-      // remove dots
-      setSoundDots((prev) => prev.slice(0, density));
-    }
     if (density > soundDots.length) {
       // create new dots
       const amountToAdd = density - soundDots.length;
@@ -126,14 +90,34 @@ export const SketchComponent = ({
             soundEnabled,
             synth: currentSynth,
             noteVelocity,
-            throttledSetBoxShadowOpacity,
+            throttledSetBoxShadowOpacity: lowPerformanceMode
+              ? undefined
+              : throttledSetBoxShadowOpacity,
             frameRate,
           })
         );
       }
       // note we keep the previous dots when adding new ones
       setSoundDots((prev) => prev.concat(newDots));
+    } else if (soundDots.length > density) {
+      // remove dots
+      setSoundDots((prev) => prev.slice(0, density));
     }
+    // update already present dots
+    // when harmony, range, or filter freq updates, update possible notes and color of each dot
+    const { possibleNotes, colorPalette } = getNotesAndColor({
+      newHarmony: harmony,
+      newRange: range,
+      filterFrequency,
+    });
+    soundDots.forEach((soundDot) => {
+      soundDot.setSoundEnabled(soundEnabled);
+      soundDot.setNewNoteAndColorProperties({ possibleNotes, colorPalette });
+      soundDot.setSpeedAndFrameRate(speed, frameRate);
+      soundDot.setThrottledSetBoxShadowOpacity(
+        lowPerformanceMode ? undefined : throttledSetBoxShadowOpacity
+      );
+    });
   }, [
     density,
     filterFrequency,
@@ -145,6 +129,7 @@ export const SketchComponent = ({
     speed,
     throttledSetBoxShadowOpacity,
     frameRate,
+    lowPerformanceMode,
   ]);
 
   const setup = (p5: p5Types, canvasParentRef: Element) => {

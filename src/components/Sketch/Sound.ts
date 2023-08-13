@@ -10,13 +10,23 @@ export const reverb = new Tone.Reverb({
   wet: 0.5,
 }).connect(filter);
 
-// use array of synths so we can play many dot sounds at once
-// (had issues changing osc type with polysynth api, unfortunately)
-// these synths are divided among the sound dots as they're generated
-// export const synths = [...Array(9)].map(() =>
-//   new Tone.MonoSynth(synthConfiguration).connect(reverb)
-// );
-
-export const synths = [
-  new Tone.PolySynth(Tone.MonoSynth, synthConfiguration).connect(reverb),
-];
+/**
+ * There is a tradeoff happening here that should be noted.
+ *
+ * Using a monosynth on each dot will cause notes to be caught off at high rates of border events.
+ * This is most audible when density and speed are high and trail is low.
+ *
+ * ToneJS's PolySynth would be more appropriate for this use case, however we ran into two issues:
+ *
+ * 1. Performance was significantly higher, and exceeding max polyphony on occasion fails audibly.
+ * App was almost unusable on mobile without unpleasant compromises.
+ * 2. It's not clear from the docs how to update a polysynth's oscillator type. We could instantiate
+ * a polysynth for every waveform option, but that feels hacky and prone to causing even more performance issues.
+ *
+ * For this reason, we use an array of MonoSynths - one for each dot. This has an inferior sound in some use cases
+ * due to the abrupt cutoff issue mentioned above, however it is usable on mobile, has a simple api to change the waveform, and
+ * sounds no worse in the majority of use cases. Hopefully, one day a better solution is worked out.
+ */
+export const synths = [...Array(12)].map(() =>
+  new Tone.MonoSynth(synthConfiguration).connect(reverb)
+);
