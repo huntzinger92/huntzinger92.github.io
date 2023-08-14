@@ -12,14 +12,11 @@ export const validateSketchConfigFavorite = (
   newConfig: IFavoriteSetting,
   lowPerformanceMode: boolean
 ) => {
-  const { density, name, speed } = newConfig;
+  const { density = 1, name, speed = 1 } = newConfig;
   const currentMaxDensity = lowPerformanceMode
     ? maxDensityLowPerformance
     : maxDensityHighPerformance;
-  const validatedDensity =
-    typeof density === "number"
-      ? Math.min(density, currentMaxDensity)
-      : density;
+  const validatedDensity = Math.min(density, currentMaxDensity);
 
   const currentMaxSpeed = lowPerformanceMode
     ? maxSpeedLowPerformance
@@ -27,8 +24,7 @@ export const validateSketchConfigFavorite = (
   let validatedSpeed = speed;
   // easter egg to escape speed limitations of UI in honor of our special, zoomy boy
   if (name !== `Blaze's Two Brain Cells`) {
-    validatedSpeed =
-      typeof speed === "number" ? Math.min(speed, currentMaxSpeed) : speed;
+    validatedSpeed = Math.min(speed, currentMaxSpeed);
   }
   return {
     ...newConfig,
