@@ -10,13 +10,19 @@ import { SoundDot } from "./SoundDot";
 import { ISketchConfigType } from "../ByteChime/ByteChime";
 import { getNotesAndColor } from "./Sound.utils";
 import { HarmonyOptions } from "../ByteChime/ByteChime.constants";
-import { filter, reverb, monoSynths, polySynth, master } from "./Sound";
+import {
+  filter,
+  reverb,
+  monoSynths,
+  polySynth,
+  master,
+} from "./SoundInstances";
 
 export interface IUseSoundProps {
   /**
    * we use a different frame rate depending on performance mode
    */
-  frameRate: 30 | 60;
+  frameRate: 30 | 45;
   /**
    * given cpu intensive animations and sound, provide flag to tweak settings for slower devices
    * defaults to true on small screen widths
@@ -101,7 +107,7 @@ export const useSound = ({
       amountToAdd: number;
       harmony: HarmonyOptions;
       filterFrequency: number;
-      frameRate: 30 | 60;
+      frameRate: 30 | 45;
       lowPerformanceMode: boolean;
       range: number;
       sketchSize: number;
@@ -158,7 +164,7 @@ export const useSound = ({
     }: {
       harmony: HarmonyOptions;
       filterFrequency: number;
-      frameRate: 30 | 60;
+      frameRate: 30 | 45;
       lowPerformanceMode: boolean;
       range: number;
       soundDots: SoundDot[];

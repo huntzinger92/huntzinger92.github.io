@@ -55,7 +55,7 @@ export class SoundDot {
    */
   borderAnimationSystems: BorderTouchAnimation[] = [];
   throttledSetBoxShadowOpacity: ThrottledSetBoxShadowOpacity;
-  frameRate: 30 | 60;
+  frameRate: 30 | 45;
 
   constructor({
     frameRate,
@@ -68,7 +68,7 @@ export class SoundDot {
     noteVelocity,
     throttledSetBoxShadowOpacity,
   }: {
-    frameRate: 30 | 60;
+    frameRate: 30 | 45;
     sketchBorderLength: number;
     speedFactor: number;
     possibleNotes: string[];
@@ -87,8 +87,9 @@ export class SoundDot {
     this.frameRate = frameRate;
     this.xPosition = Math.random() * (sketchBorderLength - 5);
     this.yPosition = Math.random() * (sketchBorderLength - 5);
-    this.xSpeed = ((Math.random() * 2 + speedFactor) * 30) / frameRate; // vary speed depending on frameRate
-    this.ySpeed = ((Math.random() * 2 + speedFactor) * 30) / frameRate;
+    const frameRateFactor = this.frameRate === 30 ? 1.1 : 10 / 11;
+    this.xSpeed = (Math.random() * 2 + speedFactor) * frameRateFactor;
+    this.ySpeed = (Math.random() * 2 + speedFactor) * frameRateFactor;
     this.increasingX = Math.random() > 0.5;
     this.increasingY = Math.random() > 0.5;
     // sound stuff
@@ -336,21 +337,24 @@ export class SoundDot {
   /**
    * class setter for speed values for user update
    */
-  setSpeedAndFrameRate(newSpeedFactor: number, newFrameRate: 30 | 60) {
+  setSpeedAndFrameRate(newSpeedFactor: number, newFrameRate: 30 | 45) {
+    // I know there is a better way of doing this, but my brain is broken and it's late
+    // someone smarter than me (future me?) please come fix this
+    // assumes possible frame rate of 30 or 45 (relationship between frame rate and visually equivalent dot speed is NOT linear)
+    const oldRateFactor = newFrameRate === 30 ? 10 / 11 : 1.1;
+    const newFrameRateFactor = newFrameRate === 30 ? 1 : 10 / 11;
     if (newFrameRate !== this.frameRate) {
-      const oldFrameRate = this.frameRate;
       // update speed without changing direction of dot (like Math.random() will below)
-      this.xSpeed = (this.xSpeed * oldFrameRate) / newFrameRate;
-      this.ySpeed = (this.ySpeed * oldFrameRate) / newFrameRate;
+      this.xSpeed = (this.xSpeed / oldRateFactor) * newFrameRateFactor;
+      this.ySpeed = (this.ySpeed / oldRateFactor) * newFrameRateFactor;
       this.frameRate = newFrameRate;
+      console.log(this.xSpeed, this.ySpeed);
     }
-    // prevent unnecessary updates from initial, unnecessary useEffect update
+    // when speed has been changed in UI
     if (newSpeedFactor !== this.speedFactor) {
       this.speedFactor = newSpeedFactor;
-      this.xSpeed =
-        ((Math.random() * 2 + newSpeedFactor) * 30) / this.frameRate; // vary speed depending on frameRate
-      this.ySpeed =
-        ((Math.random() * 2 + newSpeedFactor) * 30) / this.frameRate;
+      this.xSpeed = (Math.random() * 2 + newSpeedFactor) * newFrameRateFactor; // vary speed depending on frameRate
+      this.ySpeed = (Math.random() * 2 + newSpeedFactor) * newFrameRateFactor;
     }
   }
 

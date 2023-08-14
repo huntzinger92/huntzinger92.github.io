@@ -1,6 +1,8 @@
 import {
   IFavoriteSetting,
+  maxDensityHighPerformance,
   maxDensityLowPerformance,
+  maxSpeedHighPerformance,
   maxSpeedLowPerformance,
 } from "./ByteChime.constants";
 /**
@@ -10,16 +12,23 @@ export const validateSketchConfigFavorite = (
   newConfig: IFavoriteSetting,
   lowPerformanceMode: boolean
 ) => {
-  const { density = 1, name, speed = 1 } = newConfig;
-  let validatedDensity = density;
-  if (lowPerformanceMode) {
-    validatedDensity =
-      density > maxDensityLowPerformance ? maxDensityLowPerformance : density;
-  }
+  const { density, name, speed } = newConfig;
+  const currentMaxDensity = lowPerformanceMode
+    ? maxDensityLowPerformance
+    : maxDensityHighPerformance;
+  const validatedDensity =
+    typeof density === "number"
+      ? Math.min(density, currentMaxDensity)
+      : density;
+
+  const currentMaxSpeed = lowPerformanceMode
+    ? maxSpeedLowPerformance
+    : maxSpeedHighPerformance;
   let validatedSpeed = speed;
-  if (lowPerformanceMode && name !== `Blaze's Two Brain Cells`) {
+  // easter egg to escape speed limitations of UI in honor of our special, zoomy boy
+  if (name !== `Blaze's Two Brain Cells`) {
     validatedSpeed =
-      speed > maxSpeedLowPerformance ? maxSpeedLowPerformance : speed;
+      typeof speed === "number" ? Math.min(speed, currentMaxSpeed) : speed;
   }
   return {
     ...newConfig,

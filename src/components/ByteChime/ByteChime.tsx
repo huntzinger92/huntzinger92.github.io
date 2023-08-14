@@ -114,7 +114,7 @@ export const ByteChime = () => {
     throttledSetBoxShadowOpacity,
   ]);
 
-  const frameRate = lowPerformanceMode ? 30 : 60;
+  const frameRate = lowPerformanceMode ? 30 : 45;
 
   const { soundDots } = useSound({
     frameRate,
@@ -152,8 +152,6 @@ export const ByteChime = () => {
     transition: "all .5s ease",
     marginBottom: "20px",
   };
-
-  console.log({ sketchConfig });
 
   return (
     <Box sx={{ maxWidth: sketchSize }}>

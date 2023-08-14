@@ -30,10 +30,10 @@ export type SynthOscillatorTypeOptions =
   keyof typeof synthOscillatorTypeOptions;
 
 export const maxTrail = 110;
-export const maxDensityHighPerformance = 10;
-export const maxDensityLowPerformance = 8;
-export const maxSpeedHighPerformance = 16;
-export const maxSpeedLowPerformance = 12;
+export const maxDensityHighPerformance = 9;
+export const maxDensityLowPerformance = 7;
+export const maxSpeedHighPerformance = 13;
+export const maxSpeedLowPerformance = 11;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
   name: string;
@@ -60,7 +60,7 @@ export const favoritesList: IFavoriteSetting[] = [
     trail: -36,
     volume: 0.8,
     waveform: "amsawtooth",
-    name: "A Bird's Whisper",
+    name: "Rust Cohle",
   },
   {
     density: 2,
@@ -147,7 +147,7 @@ export const favoritesList: IFavoriteSetting[] = [
     soundEnabled: true,
     speed: 19,
     trail: -13,
-    volume: 0.6,
+    volume: 0.4,
     waveform: "pwm",
     name: "Waimea Canyon",
   },
