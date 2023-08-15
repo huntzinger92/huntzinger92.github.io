@@ -1,6 +1,7 @@
 import { RecursivePartial } from "tone/build/esm/core/util/Interface";
 import {
   chromatic,
+  dorian,
   minorPentatonic,
   majorPentatonic,
   majorScale,
@@ -15,6 +16,7 @@ import {
 import * as Tone from "tone";
 
 export const harmonyLookup = {
+  dorian,
   minorPentatonic,
   majorPentatonic,
   majorScale,
@@ -29,6 +31,7 @@ export const harmonyLookup = {
 };
 
 export const harmonyColorLookup = {
+  dorian: { hue: 252, light: 40, colorVariance: 25 },
   minorPentatonic: { hue: 345, light: 25, colorVariance: 10 }, // dark red
   majorPentatonic: { hue: 184, light: 35, colorVariance: 10 }, // light blue
   majorScale: { hue: 184, light: 40, colorVariance: 20 },

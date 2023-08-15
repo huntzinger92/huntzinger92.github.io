@@ -2,12 +2,13 @@ import { ISketchConfigType } from "./ByteChime";
 
 export const harmonyOptions = {
   chromatic: "Chromatic",
+  dorian: "Dorian",
   harmonicMinor: "Harmonic Minor",
   lydianDominant: "Lydian Dominant",
-  majorPentatonic: "Major Pentatonic",
   majorScale: "Major Scale",
-  minorPentatonic: "Minor Pentatonic",
+  majorPentatonic: "Major Pentatonic",
   minorScale: "Minor Scale",
+  minorPentatonic: "Minor Pentatonic",
   octatonic: "Octatonic",
   stackedFifths: "Stacked Fifth",
   stackedFourths: "Stacked Fourths",
