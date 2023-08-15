@@ -34,7 +34,7 @@ export const maxTrail = 110;
 export const maxDensityHighPerformance = 9;
 export const maxDensityLowPerformance = 7;
 export const maxSpeedHighPerformance = 14;
-export const maxSpeedLowPerformance = 9;
+export const maxSpeedLowPerformance = 12;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
   name: string;
@@ -58,7 +58,7 @@ export const favoritesList: IFavoriteSetting[] = [
     name: "Blaze's Two Brain Cells",
     range: 3,
     speed: 45, // easter egg - this amount significantly exceeds the speed limit imposed by the UI (just Blaze things)
-    trail: -105,
+    trail: -109,
     waveform: "fmsawtooth30",
     volume: 0.5,
   },
@@ -80,6 +80,7 @@ export const favoritesList: IFavoriteSetting[] = [
     range: 0,
     speed: 12,
     trail: -60,
+    volume: 0.4,
     waveform: "amsine",
     name: "Krista",
   },
