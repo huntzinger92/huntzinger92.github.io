@@ -33,8 +33,8 @@ export type SynthOscillatorTypeOptions =
 export const maxTrail = 110;
 export const maxDensityHighPerformance = 9;
 export const maxDensityLowPerformance = 7;
-export const maxSpeedHighPerformance = 15;
-export const maxSpeedLowPerformance = 11;
+export const maxSpeedHighPerformance = 14;
+export const maxSpeedLowPerformance = 10;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
   name: string;

@@ -51,15 +51,20 @@ export const ControlPanel = ({
 
   const audioEffectHandlers = ({
     filterFrequency,
+    trail,
     volume,
     waveform,
   }: {
     filterFrequency?: number;
+    trail?: number;
     volume?: number;
     waveform?: SynthOscillatorTypeOptions;
   }) => {
     if (filterFrequency !== undefined) {
       updateFilterFrequency(filterFrequency);
+    }
+    if (trail !== undefined) {
+      updateReverbWet(trail);
     }
     if (volume !== undefined) {
       updateMasterGain(volume);
@@ -122,7 +127,7 @@ export const ControlPanel = ({
 
   const handleTrail = (newTrail: number | number[]) => {
     const newTrailNumber = narrowNumberOrArrayToNum(newTrail);
-    updateReverbWet(newTrailNumber);
+    audioEffectHandlers({ trail: newTrailNumber });
     setSketchConfig((prev) => ({ ...prev, trail: newTrailNumber }));
   };
 
