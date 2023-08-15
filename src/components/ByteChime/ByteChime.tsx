@@ -8,7 +8,8 @@ import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { throttle } from "lodash";
 import { harmonyColorLookup } from "../Sound/Sound.constants";
 import { ControlPanel } from "./ControlPanel";
-import { useSound } from "../Sound/useSound";
+import { useSoundDots } from "../Sound/useSoundDots";
+import { master } from "../Sound/SoundInstances";
 
 export interface ISketchConfigType {
   /**
@@ -55,11 +56,6 @@ export const ByteChime = () => {
   const sketchSize = miniMode ? 250 : 500;
 
   const [lowPerformanceMode, setLowPerformanceMode] = useState(miniMode);
-  const [boxShadowColor, setBoxShadowColor] = useState({
-    hue: 0,
-    saturation: 0,
-    light: 0,
-  });
   /**
    * on sound dot border event, we set opacity to 1
    */
@@ -85,38 +81,44 @@ export const ByteChime = () => {
     waveform: "amsquare",
   });
 
-  // change color of box shadow and header to match harmony color scheme
   useEffect(() => {
-    const { hue, light } = harmonyColorLookup[sketchConfig.harmony];
-    setBoxShadowColor({ hue, light, saturation: 50 });
-  }, [sketchConfig.harmony]);
-
-  // if opacity is high following sound dot border event, gradually lower it at slow speeds
-  useEffect(() => {
-    let timeout: number;
-    if (
-      !lowPerformanceMode &&
-      boxShadowOpacity > 0.21 &&
-      sketchConfig.speed < 4
-    ) {
-      timeout = setTimeout(
-        () => throttledSetBoxShadowOpacity((prev) => prev - 0.1),
-        400
-      );
-    }
+    // hook up sound on mount
+    master.toDestination();
     return () => {
-      clearTimeout(timeout);
+      // fade out sound on unmount (prevents pops and crackles when navigating away)
+      master.gain.rampTo(0, 0.1);
+      master.disconnect();
     };
-  }, [
-    boxShadowOpacity,
-    lowPerformanceMode,
-    sketchConfig.speed,
-    throttledSetBoxShadowOpacity,
-  ]);
+  }, []);
 
-  const frameRate = lowPerformanceMode ? 30 : 45;
+  // TO DO: this fading of box shadow following border event is really cool
+  // but have sacrificed it for now to free up cpu for sound
+  // if opacity is high following sound dot border event, gradually lower it at slow speeds
+  // useEffect(() => {
+  //   let timeout: number;
+  //   if (
+  //     !lowPerformanceMode &&
+  //     boxShadowOpacity > 0.21 &&
+  //     sketchConfig.speed < 4
+  //   ) {
+  //     timeout = setTimeout(
+  //       () => throttledSetBoxShadowOpacity((prev) => prev - 0.1),
+  //       400
+  //     );
+  //   }
+  //   return () => {
+  //     clearTimeout(timeout);
+  //   };
+  // }, [
+  //   boxShadowOpacity,
+  //   lowPerformanceMode,
+  //   sketchConfig.speed,
+  //   throttledSetBoxShadowOpacity,
+  // ]);
 
-  const { soundDots } = useSound({
+  const frameRate = lowPerformanceMode ? 30 : 60;
+
+  const { soundDots } = useSoundDots({
     frameRate,
     lowPerformanceMode,
     sketchConfig,
@@ -136,19 +138,16 @@ export const ByteChime = () => {
     );
   }, [frameRate, sketchConfig, sketchSize, soundDots]);
 
-  const { hue, saturation, light } = boxShadowColor;
+  const { hue, light } = harmonyColorLookup[sketchConfig.harmony];
 
   const sketchContainerStyle = {
-    boxShadow: `0 0 20px hsla(${hue}, ${saturation}%, ${light}%, ${boxShadowOpacity})`,
+    boxShadow: `0 0 20px hsla(${hue}, 50%, ${light}%, ${boxShadowOpacity})`,
     transition: "box-shadow .5s ease",
     display: "inline-flex",
   };
 
   const headerStyle = {
-    color: `hsla(${hue}, ${light}%, ${60}%, ${Math.max(
-      boxShadowOpacity,
-      0.65
-    )})`,
+    color: `hsla(${hue}, ${light}%, 60%, ${Math.max(boxShadowOpacity, 0.65)})`,
     transition: "all .5s ease",
     marginBottom: "20px",
   };

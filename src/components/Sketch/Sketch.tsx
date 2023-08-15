@@ -6,7 +6,7 @@ export interface ISketchComponentProps {
   /**
    * we use a different frame rate depending on performance mode
    */
-  frameRate: 30 | 45;
+  frameRate: 30 | 60;
   sketchSize: number;
   soundDots: SoundDot[];
   /**

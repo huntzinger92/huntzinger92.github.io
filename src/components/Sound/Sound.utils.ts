@@ -1,4 +1,12 @@
+import { SynthOscillatorTypeOptions } from "../ByteChime/ByteChime.constants";
 import { harmonyColorLookup, harmonyLookup } from "./Sound.constants";
+import {
+  filter,
+  master,
+  monoSynths,
+  polySynth,
+  reverb,
+} from "./SoundInstances";
 
 /**
  * generates a series of wider octave ranges, going "middle out" from 4
@@ -46,4 +54,26 @@ export const getNotesAndColor = ({
     possibleNotes,
     colorPalette,
   };
+};
+
+export const updateReverbWet = (trail: number) => {
+  const newReverbWet = -0.0085 * Math.abs(trail) + 0.95; // convert range of 1 - 131 into normal range
+  reverb.wet.rampTo(newReverbWet, 0.5);
+};
+
+export const updateSynthWaveforms = (waveform: SynthOscillatorTypeOptions) => {
+  monoSynths.forEach((synth) => synth.set({ oscillator: { type: waveform } }));
+  polySynth.set({
+    oscillator: {
+      type: waveform,
+    },
+  });
+};
+
+export const updateMasterGain = (volume: number) => {
+  master.gain.rampTo(volume, 0.1);
+};
+
+export const updateFilterFrequency = (filterValue: number) => {
+  filter.frequency.rampTo(filterValue, 0.75);
 };

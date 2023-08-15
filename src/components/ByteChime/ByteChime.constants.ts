@@ -32,7 +32,7 @@ export type SynthOscillatorTypeOptions =
 export const maxTrail = 110;
 export const maxDensityHighPerformance = 9;
 export const maxDensityLowPerformance = 7;
-export const maxSpeedHighPerformance = 13;
+export const maxSpeedHighPerformance = 15;
 export const maxSpeedLowPerformance = 11;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
@@ -49,18 +49,6 @@ export const favoritesList: IFavoriteSetting[] = [
     trail: -55,
     waveform: "amsquare",
     name: "Default",
-  },
-  {
-    density: 6,
-    filterFrequency: 489.20667245748473,
-    harmony: "minorScale",
-    range: 0,
-    soundEnabled: true,
-    speed: 16,
-    trail: -36,
-    volume: 0.8,
-    waveform: "amsawtooth",
-    name: "Rust Cohle",
   },
   {
     density: 2,
@@ -115,6 +103,18 @@ export const favoritesList: IFavoriteSetting[] = [
     volume: 0.5,
     waveform: "fmsawtooth30",
     name: "Rough in the Diamond",
+  },
+  {
+    density: 6,
+    filterFrequency: 489.20667245748473,
+    harmony: "minorScale",
+    range: 0,
+    soundEnabled: true,
+    speed: 16,
+    trail: -36,
+    volume: 0.8,
+    waveform: "amsawtooth",
+    name: "Rust Cohle",
   },
   {
     density: 7,

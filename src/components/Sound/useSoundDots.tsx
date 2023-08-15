@@ -10,19 +10,13 @@ import { SoundDot } from "./SoundDot";
 import { ISketchConfigType } from "../ByteChime/ByteChime";
 import { getNotesAndColor } from "./Sound.utils";
 import { HarmonyOptions } from "../ByteChime/ByteChime.constants";
-import {
-  filter,
-  reverb,
-  monoSynths,
-  polySynth,
-  master,
-} from "./SoundInstances";
+import { monoSynths, polySynth } from "./SoundInstances";
 
 export interface IUseSoundProps {
   /**
    * we use a different frame rate depending on performance mode
    */
-  frameRate: 30 | 45;
+  frameRate: 30 | 60;
   /**
    * given cpu intensive animations and sound, provide flag to tweak settings for slower devices
    * defaults to true on small screen widths
@@ -39,9 +33,9 @@ export interface IUseSoundProps {
 /**
  * a hook for initializing sound and sound dots
  *
- * holds all of the complex logic around updating sound dots and sound following config updates
+ * holds all of the complex logic around updating sound dots following config updates
  */
-export const useSound = ({
+export const useSoundDots = ({
   frameRate,
   lowPerformanceMode,
   sketchConfig,
@@ -56,39 +50,9 @@ export const useSound = ({
       density: Math.ceil(sketchConfig.density),
       range: Math.ceil(sketchConfig.range),
       speed: Math.ceil(sketchConfig.speed),
-      trail: Math.abs(sketchConfig.trail),
     }),
     [sketchConfig]
   );
-
-  // effect focused config updates
-  // as trail value decreases, increase reverb wet value
-  useEffect(() => {
-    const newReverbWet = -0.006923 * formattedSketchConfig.trail + 0.95; // convert range of 1 - 131 into normal range
-    reverb.wet.rampTo(newReverbWet, 0.5);
-  }, [formattedSketchConfig.trail]);
-
-  // update synth waveforms in response to user update
-  useEffect(() => {
-    monoSynths.forEach(
-      (synth) => (synth.oscillator.type = formattedSketchConfig.waveform)
-    );
-    polySynth.set({
-      oscillator: {
-        type: formattedSketchConfig.waveform,
-      },
-    });
-  }, [formattedSketchConfig.waveform]);
-
-  // update master volume in response to user update
-  useEffect(() => {
-    master.gain.rampTo(formattedSketchConfig.volume, 0.1);
-  }, [formattedSketchConfig.volume]);
-
-  // keep filter updated with user selected filter freq
-  useEffect(() => {
-    filter.frequency.rampTo(formattedSketchConfig.filterFrequency, 0.75);
-  }, [formattedSketchConfig.filterFrequency]);
 
   // dot focused config updates
   const createNewDots = useCallback(
@@ -107,7 +71,7 @@ export const useSound = ({
       amountToAdd: number;
       harmony: HarmonyOptions;
       filterFrequency: number;
-      frameRate: 30 | 45;
+      frameRate: 30 | 60;
       lowPerformanceMode: boolean;
       range: number;
       sketchSize: number;
@@ -117,7 +81,7 @@ export const useSound = ({
     }) => {
       const newDots: SoundDot[] = [];
       for (let i = 0; i < amountToAdd; i++) {
-        // share synths among dots
+        // share monoSynths among dots in low performance mode
         const currentSynth = lowPerformanceMode
           ? monoSynths[i % monoSynths.length]
           : polySynth;
@@ -164,7 +128,7 @@ export const useSound = ({
     }: {
       harmony: HarmonyOptions;
       filterFrequency: number;
-      frameRate: 30 | 45;
+      frameRate: 30 | 60;
       lowPerformanceMode: boolean;
       range: number;
       soundDots: SoundDot[];

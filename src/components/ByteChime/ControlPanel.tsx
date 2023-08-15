@@ -25,6 +25,12 @@ import {
 import * as styles from "./ByteChime.styles";
 import { ISketchConfigType } from "./ByteChime";
 import { validateSketchConfigFavorite } from "./ByteChime.utils";
+import {
+  updateFilterFrequency,
+  updateMasterGain,
+  updateReverbWet,
+  updateSynthWaveforms,
+} from "../Sound/Sound.utils";
 
 export interface IControlPanelProps {
   sketchConfig: ISketchConfigType;
@@ -43,6 +49,26 @@ export const ControlPanel = ({
     return typeof value === "number" ? value : value[0];
   };
 
+  const audioEffectHandlers = ({
+    filterFrequency,
+    volume,
+    waveform,
+  }: {
+    filterFrequency?: number;
+    volume?: number;
+    waveform?: SynthOscillatorTypeOptions;
+  }) => {
+    if (filterFrequency !== undefined) {
+      updateFilterFrequency(filterFrequency);
+    }
+    if (volume !== undefined) {
+      updateMasterGain(volume);
+    }
+    if (waveform) {
+      updateSynthWaveforms(waveform);
+    }
+  };
+
   const handleSpeed = (newSpeed: number | number[]) => {
     setSketchConfig((prev) => ({
       ...prev,
@@ -59,9 +85,11 @@ export const ControlPanel = ({
   };
 
   const handleWaveform = (e: ChangeEvent<HTMLInputElement>) => {
+    const newWaveform = e.target.value as SynthOscillatorTypeOptions;
+    audioEffectHandlers({ waveform: newWaveform });
     setSketchConfig((prev) => ({
       ...prev,
-      waveform: e.target.value as SynthOscillatorTypeOptions,
+      waveform: newWaveform,
     }));
   };
 
@@ -84,6 +112,7 @@ export const ControlPanel = ({
       await Tone.start();
     }
     const sliderVolume = narrowNumberOrArrayToNum(newVolume);
+    audioEffectHandlers({ volume: sliderVolume });
     setSketchConfig((prev) => ({
       ...prev,
       volume: sliderVolume,
@@ -93,26 +122,34 @@ export const ControlPanel = ({
 
   const handleTrail = (newTrail: number | number[]) => {
     const newTrailNumber = narrowNumberOrArrayToNum(newTrail);
+    updateReverbWet(newTrailNumber);
     setSketchConfig((prev) => ({ ...prev, trail: newTrailNumber }));
   };
 
   const handleFilter = (newFilter: number | number[]) => {
     // convert linear based slider value to logarithmic frequency scale
+    const logifiedFilter = 1.038 ** narrowNumberOrArrayToNum(newFilter) * 250;
+    audioEffectHandlers({ filterFrequency: logifiedFilter });
     setSketchConfig((prev) => ({
       ...prev,
-      filterFrequency: 1.038 ** narrowNumberOrArrayToNum(newFilter) * 250,
+      filterFrequency: logifiedFilter,
     }));
   };
 
-  const handleFavorite = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFavorite = async (e: ChangeEvent<HTMLInputElement>) => {
     const matchingConfig = favoritesList.find(
       (favorite) => favorite.name === e.target.value
     );
     if (matchingConfig) {
+      const validatedConfig = validateSketchConfigFavorite(
+        matchingConfig,
+        lowPerformanceMode
+      );
+      audioEffectHandlers(validatedConfig);
       setSketchConfig((prev) => ({
         ...prev,
         soundEnabled: true,
-        ...validateSketchConfigFavorite(matchingConfig, lowPerformanceMode),
+        ...validatedConfig,
       }));
     }
   };
