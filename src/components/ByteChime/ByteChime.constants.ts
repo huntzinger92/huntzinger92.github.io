@@ -34,7 +34,7 @@ export const maxTrail = 110;
 export const maxDensityHighPerformance = 9;
 export const maxDensityLowPerformance = 7;
 export const maxSpeedHighPerformance = 14;
-export const maxSpeedLowPerformance = 10;
+export const maxSpeedLowPerformance = 9;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
   name: string;
@@ -148,7 +148,7 @@ export const favoritesList: IFavoriteSetting[] = [
     soundEnabled: true,
     speed: 19,
     trail: -13,
-    volume: 0.4,
+    volume: 0.25,
     waveform: "pwm",
     name: "Waimea Canyon",
   },

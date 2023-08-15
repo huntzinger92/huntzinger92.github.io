@@ -21,7 +21,7 @@ export interface IUseSoundProps {
    * given cpu intensive animations and sound, provide flag to tweak settings for slower devices
    * defaults to true on small screen widths
    */
-  lowPerformanceMode: boolean;
+  highPerformanceMode: boolean;
   /**
    * a throttled state setter for container box shadow, used by SoundDots
    */
@@ -37,7 +37,7 @@ export interface IUseSoundProps {
  */
 export const useSoundDots = ({
   frameRate,
-  lowPerformanceMode,
+  highPerformanceMode,
   sketchConfig,
   sketchSize,
   throttledSetBoxShadowOpacity,
@@ -61,7 +61,7 @@ export const useSoundDots = ({
       harmony,
       filterFrequency,
       frameRate,
-      lowPerformanceMode,
+      highPerformanceMode,
       range,
       sketchSize,
       soundEnabled,
@@ -72,7 +72,7 @@ export const useSoundDots = ({
       harmony: HarmonyOptions;
       filterFrequency: number;
       frameRate: 30 | 60;
-      lowPerformanceMode: boolean;
+      highPerformanceMode: boolean;
       range: number;
       sketchSize: number;
       soundEnabled: boolean;
@@ -82,9 +82,9 @@ export const useSoundDots = ({
       const newDots: SoundDot[] = [];
       for (let i = 0; i < amountToAdd; i++) {
         // share monoSynths among dots in low performance mode
-        const currentSynth = lowPerformanceMode
-          ? monoSynths[i % monoSynths.length]
-          : polySynth;
+        const currentSynth = highPerformanceMode
+          ? polySynth
+          : monoSynths[i % monoSynths.length];
         // random number between .3 and .7, provides more "depth" in the chime texture
         const noteVelocity = (Math.random() * 4 + 3) / 10;
         const { possibleNotes, colorPalette } = getNotesAndColor({
@@ -101,9 +101,9 @@ export const useSoundDots = ({
             soundEnabled,
             synth: currentSynth,
             noteVelocity,
-            throttledSetBoxShadowOpacity: lowPerformanceMode
-              ? undefined
-              : throttledSetBoxShadowOpacity,
+            throttledSetBoxShadowOpacity: highPerformanceMode
+              ? throttledSetBoxShadowOpacity
+              : undefined,
             frameRate,
           })
         );
@@ -119,7 +119,7 @@ export const useSoundDots = ({
       harmony,
       filterFrequency,
       frameRate,
-      lowPerformanceMode,
+      highPerformanceMode,
       range,
       soundDots,
       soundEnabled,
@@ -129,7 +129,7 @@ export const useSoundDots = ({
       harmony: HarmonyOptions;
       filterFrequency: number;
       frameRate: 30 | 60;
-      lowPerformanceMode: boolean;
+      highPerformanceMode: boolean;
       range: number;
       soundDots: SoundDot[];
       soundEnabled: boolean;
@@ -143,15 +143,15 @@ export const useSoundDots = ({
         filterFrequency,
       });
       soundDots.forEach((soundDot, index) => {
-        const currentSynth = lowPerformanceMode
-          ? monoSynths[index % monoSynths.length]
-          : polySynth;
+        const currentSynth = highPerformanceMode
+          ? polySynth
+          : monoSynths[index % monoSynths.length];
         soundDot.setSoundEnabled(soundEnabled);
         soundDot.setSynth(currentSynth);
         soundDot.setNewNoteAndColorProperties({ possibleNotes, colorPalette });
         soundDot.setSpeedAndFrameRate(speed, frameRate);
         soundDot.setThrottledSetBoxShadowOpacity(
-          lowPerformanceMode ? undefined : throttledSetBoxShadowOpacity
+          highPerformanceMode ? throttledSetBoxShadowOpacity : undefined
         );
       });
     },
@@ -170,7 +170,7 @@ export const useSoundDots = ({
       harmony,
       filterFrequency,
       frameRate,
-      lowPerformanceMode,
+      highPerformanceMode,
       range,
       soundEnabled,
       speed,
@@ -183,7 +183,7 @@ export const useSoundDots = ({
         filterFrequency,
         frameRate,
         harmony,
-        lowPerformanceMode,
+        highPerformanceMode,
         range,
         sketchSize,
         soundEnabled,
@@ -194,7 +194,7 @@ export const useSoundDots = ({
   }, [
     createNewDots,
     frameRate,
-    lowPerformanceMode,
+    highPerformanceMode,
     formattedSketchConfig,
     sketchSize,
     soundDots,

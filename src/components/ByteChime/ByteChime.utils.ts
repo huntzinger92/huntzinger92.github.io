@@ -10,15 +10,15 @@ import {
  */
 export const validateSketchConfigFavorite = (
   newConfig: IFavoriteSetting,
-  lowPerformanceMode: boolean
+  highPerformanceMode: boolean
 ) => {
   const { density = 1, name, speed = 1 } = newConfig;
-  const currentMaxDensity = lowPerformanceMode
+  const currentMaxDensity = !highPerformanceMode
     ? maxDensityLowPerformance
     : maxDensityHighPerformance;
   const validatedDensity = Math.min(density, currentMaxDensity);
 
-  const currentMaxSpeed = lowPerformanceMode
+  const currentMaxSpeed = !highPerformanceMode
     ? maxSpeedLowPerformance
     : maxSpeedHighPerformance;
   let validatedSpeed = speed;

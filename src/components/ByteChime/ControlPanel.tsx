@@ -35,15 +35,15 @@ import {
 export interface IControlPanelProps {
   sketchConfig: ISketchConfigType;
   setSketchConfig: Dispatch<SetStateAction<ISketchConfigType>>;
-  lowPerformanceMode: boolean;
-  setLowPerformanceMode: Dispatch<SetStateAction<boolean>>;
+  highPerformanceMode: boolean;
+  setHighPerformanceMode: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ControlPanel = ({
   sketchConfig,
   setSketchConfig,
-  lowPerformanceMode,
-  setLowPerformanceMode,
+  highPerformanceMode,
+  setHighPerformanceMode,
 }: IControlPanelProps) => {
   const narrowNumberOrArrayToNum = (value: number | number[]) => {
     return typeof value === "number" ? value : value[0];
@@ -148,7 +148,7 @@ export const ControlPanel = ({
     if (matchingConfig) {
       const validatedConfig = validateSketchConfigFavorite(
         matchingConfig,
-        lowPerformanceMode
+        highPerformanceMode
       );
       audioEffectHandlers(validatedConfig);
       setSketchConfig((prev) => ({
@@ -212,7 +212,7 @@ export const ControlPanel = ({
           <Slider
             min={1}
             max={
-              lowPerformanceMode
+              !highPerformanceMode
                 ? maxDensityLowPerformance
                 : maxDensityHighPerformance
             }
@@ -244,7 +244,7 @@ export const ControlPanel = ({
           <Slider
             min={0.1}
             max={
-              lowPerformanceMode
+              !highPerformanceMode
                 ? maxSpeedLowPerformance
                 : maxSpeedHighPerformance
             }
@@ -274,12 +274,12 @@ export const ControlPanel = ({
           <FormControlLabel
             control={
               <Checkbox
-                checked={lowPerformanceMode}
-                inputProps={{ "aria-label": "Low Performance Mode" }}
-                onChange={() => setLowPerformanceMode((prev) => !prev)}
+                checked={highPerformanceMode}
+                inputProps={{ "aria-label": "High Performance Mode" }}
+                onChange={() => setHighPerformanceMode((prev) => !prev)}
               />
             }
-            label="Low Performance Mode"
+            label="High Performance Mode"
           />
         </FormGroup>
       </Box>

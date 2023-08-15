@@ -55,7 +55,7 @@ export const ByteChime = () => {
   const miniMode = useMediaQuery(theme.breakpoints.down("md"));
   const sketchSize = miniMode ? 250 : 500;
 
-  const [lowPerformanceMode, setLowPerformanceMode] = useState(miniMode);
+  const [highPerformanceMode, setHighPerformanceMode] = useState(false);
   /**
    * on sound dot border event, we set opacity to 1
    */
@@ -65,8 +65,8 @@ export const ByteChime = () => {
   const throttledSetBoxShadowOpacity = useCallback(
     // box shadow color is updated on border events
     // and invoked repeatedly to dim after border events when not in lowPerformanceMode
-    // keep setState calls to 400ms frequency at maximum to try and keep this performant
-    throttle(setBoxShadowOpacity, 400),
+    // keep setState calls to lower frequency at maximum to try and keep this performant
+    throttle(setBoxShadowOpacity, 200),
     []
   );
   const [sketchConfig, setSketchConfig] = useState<ISketchConfigType>({
@@ -91,36 +91,34 @@ export const ByteChime = () => {
     };
   }, []);
 
-  // TO DO: this fading of box shadow following border event is really cool
-  // but have sacrificed it for now to free up cpu for sound
-  // if opacity is high following sound dot border event, gradually lower it at slow speeds
-  // useEffect(() => {
-  //   let timeout: number;
-  //   if (
-  //     !lowPerformanceMode &&
-  //     boxShadowOpacity > 0.21 &&
-  //     sketchConfig.speed < 4
-  //   ) {
-  //     timeout = setTimeout(
-  //       () => throttledSetBoxShadowOpacity((prev) => prev - 0.1),
-  //       400
-  //     );
-  //   }
-  //   return () => {
-  //     clearTimeout(timeout);
-  //   };
-  // }, [
-  //   boxShadowOpacity,
-  //   lowPerformanceMode,
-  //   sketchConfig.speed,
-  //   throttledSetBoxShadowOpacity,
-  // ]);
+  // if opacity is high following sound dot border event, gradually lower it at slow speeds in high perf mode
+  useEffect(() => {
+    let timeout: number;
+    if (
+      highPerformanceMode &&
+      boxShadowOpacity > 0.36 &&
+      sketchConfig.speed < 5
+    ) {
+      timeout = setTimeout(
+        () => throttledSetBoxShadowOpacity((prev) => prev - 0.05),
+        200
+      );
+    }
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [
+    boxShadowOpacity,
+    highPerformanceMode,
+    sketchConfig.speed,
+    throttledSetBoxShadowOpacity,
+  ]);
 
-  const frameRate = lowPerformanceMode ? 30 : 60;
+  const frameRate = highPerformanceMode ? 60 : 30;
 
   const { soundDots } = useSoundDots({
     frameRate,
-    lowPerformanceMode,
+    highPerformanceMode,
     sketchConfig,
     sketchSize,
     throttledSetBoxShadowOpacity,
@@ -142,13 +140,13 @@ export const ByteChime = () => {
 
   const sketchContainerStyle = {
     boxShadow: `0 0 20px hsla(${hue}, 50%, ${light}%, ${boxShadowOpacity})`,
-    transition: "box-shadow .5s ease",
+    transition: "box-shadow .3s ease",
     display: "inline-flex",
   };
 
   const headerStyle = {
     color: `hsla(${hue}, ${light}%, 60%, ${Math.max(boxShadowOpacity, 0.65)})`,
-    transition: "all .5s ease",
+    transition: "all .3s ease",
     marginBottom: "20px",
   };
 
@@ -162,8 +160,8 @@ export const ByteChime = () => {
         <ControlPanel
           sketchConfig={sketchConfig}
           setSketchConfig={setSketchConfig}
-          lowPerformanceMode={lowPerformanceMode}
-          setLowPerformanceMode={setLowPerformanceMode}
+          highPerformanceMode={highPerformanceMode}
+          setHighPerformanceMode={setHighPerformanceMode}
         />
       </Box>
     </Box>
