@@ -1,12 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
 import * as Tone from "tone";
 import p5Types from "p5";
 import { pitchMap } from "./Sound.constants";
 import { BorderTouchAnimation } from "./BorderTouchAnimation";
-
-type ThrottledSetBoxShadowOpacity =
-  | Dispatch<SetStateAction<number>>
-  | undefined;
 
 /**
  * each "sound dot" rendered to the canvas
@@ -54,7 +49,6 @@ export class SoundDot {
    * every time dot touches border, a new border animation is added, then removed when it "dies" (see BorderTouchAnimation class)
    */
   borderAnimationSystems: BorderTouchAnimation[] = [];
-  throttledSetBoxShadowOpacity: ThrottledSetBoxShadowOpacity;
   frameRate: 30 | 60;
 
   constructor({
@@ -66,7 +60,6 @@ export class SoundDot {
     soundEnabled,
     synth,
     noteVelocity,
-    throttledSetBoxShadowOpacity,
   }: {
     frameRate: 30 | 60;
     sketchBorderLength: number;
@@ -76,10 +69,6 @@ export class SoundDot {
     soundEnabled: boolean;
     synth: Tone.MonoSynth | Tone.PolySynth<Tone.MonoSynth>;
     noteVelocity: number;
-    /**
-     * a state setter for sketch container's box shadow opacity, undefined in low performance mode
-     */
-    throttledSetBoxShadowOpacity: ThrottledSetBoxShadowOpacity;
   }) {
     // positional and directional stuff
     this.sketchBorderLength = sketchBorderLength;
@@ -119,7 +108,6 @@ export class SoundDot {
     this.saturation = Math.floor(8.125 * this.noteVelocity + 171.25);
     this.defaultLightAmount = light;
     this.currentLightAmount = light;
-    this.throttledSetBoxShadowOpacity = throttledSetBoxShadowOpacity;
   }
 
   /**
@@ -137,8 +125,6 @@ export class SoundDot {
       // dim border animation response from original color, bottom out at lightness of 10
       light: Math.max(this.defaultLightAmount - 10, 10),
     });
-    // update box shadow of sketch
-    this.throttledSetBoxShadowOpacity?.(1);
     this.borderAnimationSystems.push(newBorderAnimationSystem);
     // keep track of border events
     this.numberOfBorderEvents++;
@@ -373,14 +359,5 @@ export class SoundDot {
     }
     // only update synth when we need to (i.e., when switching in and out of performance mode)
     this.synth = newSynth;
-  }
-
-  /**
-   * update the set box shadow opacity function
-   * we turn box shadow animation off in low performance mode,
-   * and ideally we'd like a way to do this without resetting the dots
-   */
-  setThrottledSetBoxShadowOpacity(newSetterFn: ThrottledSetBoxShadowOpacity) {
-    this.throttledSetBoxShadowOpacity = newSetterFn;
   }
 }

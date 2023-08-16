@@ -77,3 +77,11 @@ export const updateMasterGain = (volume: number) => {
 export const updateFilterFrequency = (filterValue: number) => {
   filter.frequency.rampTo(filterValue, 0.75);
 };
+
+export const teardownSound = () => {
+  // fade out sound on unmount (prevents pops and crackles when navigating away)
+  master.gain.rampTo(0, 0.1);
+  master.disconnect();
+  polySynth.dispose();
+  monoSynths.forEach((synth) => synth.dispose());
+};

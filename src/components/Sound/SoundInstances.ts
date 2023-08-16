@@ -21,7 +21,7 @@ export const reverb = new Tone.Reverb({
  * Using poly synth is better, but given the density of notes that sometimes occurs, it becomes
  * unusable on mobile
  */
-export const monoSynths = [...Array(8)].map(() =>
+export const monoSynths = [...Array(6)].map(() =>
   new Tone.MonoSynth({ ...synthConfiguration, volume: -4.5 }).connect(reverb)
 );
 

@@ -1,15 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { SketchComponent } from "../Sketch/Sketch";
 import {
   HarmonyOptions,
   SynthOscillatorTypeOptions,
 } from "./ByteChime.constants";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { throttle } from "lodash";
 import { harmonyColorLookup } from "../Sound/Sound.constants";
 import { ControlPanel } from "./ControlPanel";
 import { useSoundDots } from "../Sound/useSoundDots";
-import { master } from "../Sound/SoundInstances";
 
 export interface ISketchConfigType {
   /**
@@ -56,19 +54,6 @@ export const ByteChime = () => {
   const sketchSize = miniMode ? 250 : 500;
 
   const [highPerformanceMode, setHighPerformanceMode] = useState(false);
-  /**
-   * on sound dot border event, we set opacity to 1
-   */
-  const [boxShadowOpacity, setBoxShadowOpacity] = useState(1);
-  // useCallback doesn't seem to know how to check for throttle dependencies
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const throttledSetBoxShadowOpacity = useCallback(
-    // box shadow color is updated on border events
-    // and invoked repeatedly to dim after border events when not in lowPerformanceMode
-    // keep setState calls to lower frequency at maximum to try and keep this performant
-    throttle(setBoxShadowOpacity, 200),
-    []
-  );
   const [sketchConfig, setSketchConfig] = useState<ISketchConfigType>({
     density: 3,
     filterFrequency: 750,
@@ -81,39 +66,6 @@ export const ByteChime = () => {
     waveform: "amsquare",
   });
 
-  useEffect(() => {
-    // hook up sound on mount
-    master.toDestination();
-    return () => {
-      // fade out sound on unmount (prevents pops and crackles when navigating away)
-      master.gain.rampTo(0, 0.1);
-      master.disconnect();
-    };
-  }, []);
-
-  // if opacity is high following sound dot border event, gradually lower it at slow speeds in high perf mode
-  useEffect(() => {
-    let timeout: number;
-    if (
-      highPerformanceMode &&
-      boxShadowOpacity > 0.36 &&
-      sketchConfig.speed < 5
-    ) {
-      timeout = setTimeout(
-        () => throttledSetBoxShadowOpacity((prev) => prev - 0.05),
-        200
-      );
-    }
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [
-    boxShadowOpacity,
-    highPerformanceMode,
-    sketchConfig.speed,
-    throttledSetBoxShadowOpacity,
-  ]);
-
   const frameRate = highPerformanceMode ? 60 : 30;
 
   const { soundDots } = useSoundDots({
@@ -121,7 +73,6 @@ export const ByteChime = () => {
     highPerformanceMode,
     sketchConfig,
     sketchSize,
-    throttledSetBoxShadowOpacity,
   });
 
   // memoizing the sketch allows us to update box shadow (glow effect) without rerendering sketch component
@@ -139,13 +90,13 @@ export const ByteChime = () => {
   const { hue, light } = harmonyColorLookup[sketchConfig.harmony];
 
   const sketchContainerStyle = {
-    boxShadow: `0 0 20px hsla(${hue}, 50%, ${light}%, ${boxShadowOpacity})`,
+    boxShadow: `0 0 20px hsl(${hue}, 50%, ${light}%)`,
     transition: "box-shadow .3s ease",
     display: "inline-flex",
   };
 
   const headerStyle = {
-    color: `hsla(${hue}, ${light}%, 60%, ${Math.max(boxShadowOpacity, 0.65)})`,
+    color: `hsl(${hue}, ${light}%, 60%)`,
     transition: "all .3s ease",
     marginBottom: "20px",
   };
@@ -153,9 +104,11 @@ export const ByteChime = () => {
   return (
     <Box sx={{ maxWidth: sketchSize }}>
       <Typography sx={headerStyle} variant="h3">
-        Byte Chime
+        DotTune
       </Typography>
-      <Box sx={sketchContainerStyle}>{memoizedSketch}</Box>
+      <Box sx={sketchContainerStyle} className="sketchContainer">
+        {memoizedSketch}
+      </Box>
       <Box sx={{ maxWidth: sketchSize }}>
         <ControlPanel
           sketchConfig={sketchConfig}

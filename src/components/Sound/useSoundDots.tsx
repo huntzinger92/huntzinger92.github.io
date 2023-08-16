@@ -1,14 +1,7 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SoundDot } from "./SoundDot";
 import { ISketchConfigType } from "../ByteChime/ByteChime";
-import { getNotesAndColor } from "./Sound.utils";
+import { getNotesAndColor, teardownSound } from "./Sound.utils";
 import { HarmonyOptions } from "../ByteChime/ByteChime.constants";
 import { monoSynths, polySynth } from "./SoundInstances";
 
@@ -22,10 +15,6 @@ export interface IUseSoundProps {
    * defaults to true on small screen widths
    */
   highPerformanceMode: boolean;
-  /**
-   * a throttled state setter for container box shadow, used by SoundDots
-   */
-  throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
   sketchSize: number;
   sketchConfig: ISketchConfigType;
 }
@@ -40,9 +29,15 @@ export const useSoundDots = ({
   highPerformanceMode,
   sketchConfig,
   sketchSize,
-  throttledSetBoxShadowOpacity,
 }: IUseSoundProps) => {
   const [soundDots, setSoundDots] = useState<SoundDot[]>([]);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", teardownSound);
+    return () => {
+      window.removeEventListener("beforeunload", teardownSound);
+    };
+  }, []);
 
   const formattedSketchConfig = useMemo(
     () => ({
@@ -66,7 +61,6 @@ export const useSoundDots = ({
       sketchSize,
       soundEnabled,
       speed,
-      throttledSetBoxShadowOpacity,
     }: {
       amountToAdd: number;
       harmony: HarmonyOptions;
@@ -77,7 +71,6 @@ export const useSoundDots = ({
       sketchSize: number;
       soundEnabled: boolean;
       speed: number;
-      throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
     }) => {
       const newDots: SoundDot[] = [];
       for (let i = 0; i < amountToAdd; i++) {
@@ -101,9 +94,6 @@ export const useSoundDots = ({
             soundEnabled,
             synth: currentSynth,
             noteVelocity,
-            throttledSetBoxShadowOpacity: highPerformanceMode
-              ? throttledSetBoxShadowOpacity
-              : undefined,
             frameRate,
           })
         );
@@ -124,7 +114,6 @@ export const useSoundDots = ({
       soundDots,
       soundEnabled,
       speed,
-      throttledSetBoxShadowOpacity,
     }: {
       harmony: HarmonyOptions;
       filterFrequency: number;
@@ -134,7 +123,6 @@ export const useSoundDots = ({
       soundDots: SoundDot[];
       soundEnabled: boolean;
       speed: number;
-      throttledSetBoxShadowOpacity: Dispatch<SetStateAction<number>>;
     }) => {
       // when harmony, range, or filter freq updates, update possible notes and color of each dot
       const { possibleNotes, colorPalette } = getNotesAndColor({
@@ -150,9 +138,6 @@ export const useSoundDots = ({
         soundDot.setSynth(currentSynth);
         soundDot.setNewNoteAndColorProperties({ possibleNotes, colorPalette });
         soundDot.setSpeedAndFrameRate(speed, frameRate);
-        soundDot.setThrottledSetBoxShadowOpacity(
-          highPerformanceMode ? throttledSetBoxShadowOpacity : undefined
-        );
       });
     },
     []
@@ -174,7 +159,6 @@ export const useSoundDots = ({
       range,
       soundEnabled,
       speed,
-      throttledSetBoxShadowOpacity,
     });
     if (density > soundDots.length) {
       const amountToAdd = density - soundDots.length;
@@ -188,7 +172,6 @@ export const useSoundDots = ({
         sketchSize,
         soundEnabled,
         speed,
-        throttledSetBoxShadowOpacity,
       });
     }
   }, [
@@ -198,7 +181,6 @@ export const useSoundDots = ({
     formattedSketchConfig,
     sketchSize,
     soundDots,
-    throttledSetBoxShadowOpacity,
     updateDots,
   ]);
 
