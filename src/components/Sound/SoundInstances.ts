@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 import { synthConfiguration } from "./Sound.constants";
 
-export const master = new Tone.Gain(0);
+export const master = new Tone.Gain(0).toDestination();
 
 export const compressor = new Tone.Compressor(-40, 2).connect(master);
 

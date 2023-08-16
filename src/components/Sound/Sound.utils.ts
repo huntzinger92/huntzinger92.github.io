@@ -78,10 +78,19 @@ export const updateFilterFrequency = (filterValue: number) => {
   filter.frequency.rampTo(filterValue, 0.75);
 };
 
-export const teardownSound = () => {
-  // fade out sound on unmount (prevents pops and crackles when navigating away)
+/**
+ * set disposeSynths to true if we want to clean up synth instances (irreversible)
+ */
+export const teardownSound = (_?: unknown, disposeSynths?: boolean) => {
   master.gain.rampTo(0, 0.1);
   master.disconnect();
-  polySynth.dispose();
-  monoSynths.forEach((synth) => synth.dispose());
+  if (disposeSynths) {
+    polySynth.dispose();
+    monoSynths.forEach((synth) => synth.dispose());
+  }
+};
+
+export const setupSound = () => {
+  master.gain.rampTo(1, 0.5);
+  master.toDestination();
 };

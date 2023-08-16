@@ -34,7 +34,7 @@ export const maxTrail = 110;
 export const maxDensityHighPerformance = 9;
 export const maxDensityLowPerformance = 7;
 export const maxSpeedHighPerformance = 14;
-export const maxSpeedLowPerformance = 12;
+export const maxSpeedLowPerformance = 13;
 
 export interface IFavoriteSetting extends Partial<ISketchConfigType> {
   name: string;

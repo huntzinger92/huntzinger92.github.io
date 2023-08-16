@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SoundDot } from "./SoundDot";
 import { ISketchConfigType } from "../ByteChime/ByteChime";
-import { getNotesAndColor, teardownSound } from "./Sound.utils";
+import { getNotesAndColor, setupSound, teardownSound } from "./Sound.utils";
 import { HarmonyOptions } from "../ByteChime/ByteChime.constants";
 import { monoSynths, polySynth } from "./SoundInstances";
 
@@ -32,9 +32,14 @@ export const useSoundDots = ({
 }: IUseSoundProps) => {
   const [soundDots, setSoundDots] = useState<SoundDot[]>([]);
 
+  // more gracefully handle user navigating away from the page with browser events that fade out master volume
   useEffect(() => {
-    window.addEventListener("beforeunload", teardownSound);
+    window.addEventListener("visibilitychange", () => {
+      document.hidden ? teardownSound() : setupSound();
+    });
+    window.addEventListener("beforeunload", (e) => teardownSound(e, true));
     return () => {
+      window.removeEventListener("visibilitychange", teardownSound);
       window.removeEventListener("beforeunload", teardownSound);
     };
   }, []);
