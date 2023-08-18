@@ -15,10 +15,13 @@ export const DefinitionText = ({
       }}
       id="definitionContainerShown"
     >
-      <Typography variant="subtitle2">
+      <Typography variant="subtitle2" fontFamily="cursive">
         <Fade in timeout={2500}>
           <span>
-            <span id="definitionWord" style={{ color: secondaryColor }}>
+            <span
+              id="definitionWord"
+              style={{ color: secondaryColor, fontWeight: "bold" }}
+            >
               Aleatory
             </span>
           </span>

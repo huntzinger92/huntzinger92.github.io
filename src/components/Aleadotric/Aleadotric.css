@@ -3,6 +3,7 @@
 #sketchHeader {
     font-family: 'Monoton', cursive;
     transition: all 1s ease;
+    margin-bottom: 20px;
 }
 
 #sketchContainer {
@@ -11,8 +12,8 @@
 }
 
 #definitionContainerShown {
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-top: 5px;
+    margin-bottom: 15px;
     max-width: 500px;
     max-height: 500px;
     transition: all 1s ease;

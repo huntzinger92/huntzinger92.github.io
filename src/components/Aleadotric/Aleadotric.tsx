@@ -127,15 +127,17 @@ export const Aleadotric = () => {
 
   return (
     <>
-      <Typography id="sketchHeader" variant="h3">
-        <span style={header1Style}>Alea</span>
-        <span style={header2Style}>dot</span>
-        <span style={header1Style}>ric</span>
-      </Typography>
-      <DefinitionText
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
-      />
+      <Box sx={{ maxWidth: "85vw" }}>
+        <DefinitionText
+          primaryColor={primaryColor}
+          secondaryColor={secondaryColor}
+        />
+        <Typography id="sketchHeader" variant={miniMode ? "h4" : "h3"}>
+          <span style={header1Style}>Alea</span>
+          <span style={header2Style}>dot</span>
+          <span style={header1Style}>ric</span>
+        </Typography>
+      </Box>
       <Box id="sketchAndContralPanelContainer" sx={{ maxWidth: sketchSize }}>
         <Box sx={sketchContainerStyle} id="sketchContainer">
           {memoizedSketch}
