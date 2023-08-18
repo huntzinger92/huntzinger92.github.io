@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Monoton');
+
+#sketchHeader {
+    font-family: 'Monoton', cursive;
+    transition: all .5s ease;
+    margin-bottom: 20px;
+}
+
+#sketchContainer {
+    transition: box-shadow .3s ease;
+    display: inline-flex;
+}

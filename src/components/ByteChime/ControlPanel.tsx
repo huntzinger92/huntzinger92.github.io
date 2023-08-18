@@ -1,5 +1,4 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
-import * as Tone from "tone";
 import {
   HarmonyOptions,
   SynthOscillatorTypeOptions,
@@ -113,9 +112,6 @@ export const ControlPanel = ({
   };
 
   const handleVolume = async (newVolume: number | number[]) => {
-    if (!sketchConfig.soundEnabled) {
-      await Tone.start();
-    }
     const sliderVolume = narrowNumberOrArrayToNum(newVolume);
     audioEffectHandlers({ volume: sliderVolume });
     setSketchConfig((prev) => ({

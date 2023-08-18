@@ -50,6 +50,7 @@ export const favoritesList: IFavoriteSetting[] = [
     trail: -55,
     waveform: "amsquare",
     name: "Default",
+    volume: 0.4,
   },
   {
     density: 2,
@@ -69,7 +70,7 @@ export const favoritesList: IFavoriteSetting[] = [
     range: 6,
     speed: 20,
     trail: -5,
-    volume: 0.65,
+    volume: 0.5,
     waveform: "amtriangle",
     name: "Kaleidoscope",
   },

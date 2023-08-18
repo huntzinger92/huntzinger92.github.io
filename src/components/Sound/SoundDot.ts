@@ -242,7 +242,7 @@ export class SoundDot {
   setHue(newHue?: number) {
     // if we have a newHue, use original color variance
     // else, use fraction of colorVariance to let colors very gradually "drift" away from their original hue
-    const variance = newHue ? this.colorVariance : this.colorVariance / 20;
+    const variance = newHue ? this.colorVariance : this.colorVariance / 50;
     // generate random hue
     const randomHue = Math.floor(
       (newHue ?? this.hue) + Math.random() * variance - variance / 2
