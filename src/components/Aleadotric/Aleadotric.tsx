@@ -4,12 +4,13 @@ import { SketchComponent } from "../Sketch/Sketch";
 import {
   HarmonyOptions,
   SynthOscillatorTypeOptions,
-} from "./ByteChime.constants";
+} from "./Aleadotric.constants";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { harmonyColorLookup } from "../Sound/Sound.constants";
 import { ControlPanel } from "./ControlPanel";
 import { useSoundDots } from "../Sound/useSoundDots";
-import "./ByteChime.css";
+import "./Aleadotric.css";
+import { DefinitionText } from "./DefinitionText";
 
 export interface ISketchConfigType {
   /**
@@ -50,7 +51,7 @@ export interface ISketchConfigType {
   waveform: SynthOscillatorTypeOptions;
 }
 
-export const ByteChime = () => {
+export const Aleadotric = () => {
   const theme = useTheme();
   const miniMode = useMediaQuery(theme.breakpoints.down("md"));
   const sketchSize = miniMode ? 250 : 500;
@@ -101,46 +102,53 @@ export const ByteChime = () => {
 
   const { hue, light } = harmonyColorLookup[sketchConfig.harmony];
 
-  const sketchContainerStyle = {
-    boxShadow: `0 0 20px hsl(${hue}, 50%, ${light}%)`,
-  };
-
   // make header color's lightness be dependent on user set filter frequency
-  const headerColorLightFromFilterFrequency =
+  const colorLightFromFilterFrequency =
     7 * Math.log(sketchConfig.filterFrequency);
 
-  const header1Style = {
-    color: `hsl(${hue}, ${light}%, ${headerColorLightFromFilterFrequency}%)`,
-    textShadow: `0 0 26px hsl(${hue}, ${light}%, 55%), 0 0 35px hsl(${hue}, ${light}%, 35%)`,
-    transition: "inherit",
+  const sketchContainerStyle = {
+    boxShadow: `0 0 20px hsl(${hue}, 50%, ${colorLightFromFilterFrequency}%)`,
   };
 
-  // note that the hue of the second header ("Dot") is shifted
-  const header2Style = {
-    color: `hsl(${
-      hue + 25
-    }, ${light}%, ${headerColorLightFromFilterFrequency}%)`,
+  const primaryColor = `hsl(${hue}, ${light}%, ${colorLightFromFilterFrequency}%)`;
+  const secondaryColor = `hsl(${
+    hue + 30
+  }, ${light}%, ${colorLightFromFilterFrequency}%)`;
+
+  const header1Style = {
+    color: primaryColor,
     textShadow: `0 0 26px hsl(${hue}, ${light}%, 55%), 0 0 35px hsl(${hue}, ${light}%, 35%)`,
-    transition: "inherit",
+  };
+
+  const header2Style = {
+    color: secondaryColor,
+    textShadow: `0 0 26px hsl(${hue}, ${light}%, 55%), 0 0 35px hsl(${hue}, ${light}%, 35%)`,
   };
 
   return (
-    <Box sx={{ maxWidth: sketchSize }}>
+    <>
       <Typography id="sketchHeader" variant="h3">
-        <span style={header1Style}>Sound</span>
-        <span style={header2Style}>Dot</span>
+        <span style={header1Style}>Alea</span>
+        <span style={header2Style}>dot</span>
+        <span style={header1Style}>ric</span>
       </Typography>
-      <Box sx={sketchContainerStyle} id="sketchContainer">
-        {memoizedSketch}
+      <DefinitionText
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+      />
+      <Box id="sketchAndContralPanelContainer" sx={{ maxWidth: sketchSize }}>
+        <Box sx={sketchContainerStyle} id="sketchContainer">
+          {memoizedSketch}
+        </Box>
+        <Box sx={{ maxWidth: sketchSize }}>
+          <ControlPanel
+            sketchConfig={sketchConfig}
+            setSketchConfig={setSketchConfig}
+            highPerformanceMode={highPerformanceMode}
+            setHighPerformanceMode={setHighPerformanceMode}
+          />
+        </Box>
       </Box>
-      <Box sx={{ maxWidth: sketchSize }}>
-        <ControlPanel
-          sketchConfig={sketchConfig}
-          setSketchConfig={setSketchConfig}
-          highPerformanceMode={highPerformanceMode}
-          setHighPerformanceMode={setHighPerformanceMode}
-        />
-      </Box>
-    </Box>
+    </>
   );
 };

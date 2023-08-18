@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SoundDot } from "./SoundDot";
-import { ISketchConfigType } from "../ByteChime/ByteChime";
+import { ISketchConfigType } from "../Aleadotric/Aleadotric";
 import { getNotesAndColor, setupSound, teardownSound } from "./Sound.utils";
-import { HarmonyOptions } from "../ByteChime/ByteChime.constants";
+import { HarmonyOptions } from "../Aleadotric/Aleadotric.constants";
 import { monoSynths, polySynth } from "./SoundInstances";
 
 export interface IUseSoundProps {

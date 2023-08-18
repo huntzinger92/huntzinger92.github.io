@@ -1,4 +1,4 @@
-import { ISketchConfigType } from "./ByteChime";
+import { ISketchConfigType } from "./Aleadotric";
 
 export const harmonyOptions = {
   chromatic: "Chromatic",

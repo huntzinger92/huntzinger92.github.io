@@ -10,7 +10,7 @@ import {
   maxSpeedLowPerformance,
   maxTrail,
   synthOscillatorTypeOptions,
-} from "./ByteChime.constants";
+} from "./Aleadotric.constants";
 import {
   Box,
   Checkbox,
@@ -21,9 +21,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import * as styles from "./ByteChime.styles";
-import { ISketchConfigType } from "./ByteChime";
-import { validateSketchConfigFavorite } from "./ByteChime.utils";
+import * as styles from "./Aleadotric.styles";
+import { ISketchConfigType } from "./Aleadotric";
+import { validateSketchConfigFavorite } from "./Aleadotric.utils";
 import {
   updateFilterFrequency,
   updateMasterGain,

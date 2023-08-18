@@ -1,6 +1,6 @@
 import { Box, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
-import { ByteChime } from "./components/ByteChime/ByteChime";
+import { Aleadotric } from "./components/Aleadotric/Aleadotric";
 
 const darkTheme = createTheme({
   palette: {
@@ -12,7 +12,7 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <Box>
-        <ByteChime />
+        <Aleadotric />
       </Box>
     </ThemeProvider>
   );

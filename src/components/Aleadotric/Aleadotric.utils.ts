@@ -4,7 +4,7 @@ import {
   maxDensityLowPerformance,
   maxSpeedHighPerformance,
   maxSpeedLowPerformance,
-} from "./ByteChime.constants";
+} from "./Aleadotric.constants";
 /**
  * validate sketch setting favorites to make sure they are limited by lowPerformance limits
  */

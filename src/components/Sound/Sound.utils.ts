@@ -1,4 +1,4 @@
-import { SynthOscillatorTypeOptions } from "../ByteChime/ByteChime.constants";
+import { SynthOscillatorTypeOptions } from "../Aleadotric/Aleadotric.constants";
 import { harmonyColorLookup, harmonyLookup } from "./Sound.constants";
 import {
   filter,
