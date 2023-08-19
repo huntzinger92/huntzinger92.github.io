@@ -15,23 +15,19 @@ export const DefinitionText = ({
       }}
       id="definitionContainerShown"
     >
-      <Typography variant="subtitle2" fontFamily="cursive">
-        <Fade in timeout={2500}>
+      <Typography variant="subtitle2">
+        <Fade in timeout={3000}>
           <span>
-            <span
-              id="definitionWord"
-              style={{ color: secondaryColor, fontWeight: "bold" }}
-            >
-              Aleatory
+            <span id="definitionWord" style={{ color: secondaryColor }}>
+              Aleatoric
             </span>
           </span>
         </Fade>
         <Fade in style={{ transitionDelay: "2000ms" }} timeout={3000}>
           <span>
             {" "}
-            - relating to music involving elements of chance (sometimes using
-            statistical or computer techniques) during their composition,
-            production, or performance
+            - involving elements of chance during music composition, production,
+            or performance
           </span>
         </Fade>
       </Typography>

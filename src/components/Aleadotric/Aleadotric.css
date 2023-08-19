@@ -3,7 +3,7 @@
 #sketchHeader {
     font-family: 'Monoton', cursive;
     transition: all 1s ease;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #sketchContainer {
@@ -13,7 +13,7 @@
 
 #definitionContainerShown {
     margin-top: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 17px;
     max-width: 500px;
     max-height: 500px;
     transition: all 1s ease;
